@@ -1,0 +1,6 @@
+# These contain sensitive information and
+# thus should not be leaked to GitHub!
+.secrets
+
+# IntelliJ IDEA
+.idea
