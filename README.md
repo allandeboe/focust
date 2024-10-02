@@ -1,7 +1,7 @@
 <picture>
     <source media="(prefers-color-scheme: dark)" srcset="resources/images/focust-banner-white.png" width="512">
     <source media="(prefers-color-scheme: light)" srcset="resources/images/focust-banner-black.png" width="512">
-    <img alt="Shows the banner for Focust, using white instead of black in dark mode to make the text in the image viewable." src="focust-banner-black.png" width="512">
+    <img alt="Shows the banner for Focust, using white instead of black in dark mode to make the text in the image viewable." src="resources/images/focust-banner-black.png" width="512">
 </picture>
 
 # About
@@ -35,4 +35,4 @@ There are multiple ways to build this application from source code:
 
 # License
 
-Focust is licensed under the **[GNU General Public License v3.0](LICENSE)**. To learn more, go to *https://www.gnu.org/licenses/*.hib
+Focust is licensed under the **[GNU General Public License v3.0](LICENSE)**. To learn more, go to *https://www.gnu.org/licenses/*

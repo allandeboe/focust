@@ -38,10 +38,17 @@ The recommend approach is to create a Linux-based Jenkins slave. You can create 
 ## Adding Necessary Credentials
 Before actually creating a job that will build the application, it is actually rather important to create the needed credentials that the `Jenkinsfile` needs to 
 
-The credentials needed are username & password credentials with the following IDs:
+The first two credentials needed are **username & password** credentials with the following IDs:
 
 * `focust-spring-security` - for Spring Security
 * `focust-mysql-database` - for MySQL Database
+
+The last credential needed is an **certificate** credential, where you upload an appropriate `PKCS12` *SSL Certificate*:
+
+* `focust-spring-ssl-certificate` - to enable HTTPS for the Spring Application; `focust-spring` and `focust-spring.p12` are the values for *alias* and the *keystore*, respectively.
+
+> [!IMPORTANT]
+> changing the alias and keystore of the SSL Certificate should be reflected in the `./spring/src/main/resources/application.properties` file with the properties `server.ssl.key-store-alias` and `server.ssl.key-store`, respectively. Note that the `server.ssl.key-store` property needs to accept a value of `classpath:/keystore/[KEYSTORE]`, where `[KEYSTORE]` is the keystore value.
 
 To create Credentials in Jenkins, please refer to [this page](https://www.jenkins.io/doc/book/using/using-credentials/) on the Jenkins website.
 
@@ -64,4 +71,4 @@ It should look something like this:
 Now, all you have to do is press "Save" and you should finally have the job available on the Jenkins dashboard.
 
 ## Running the Build
-Once back on the dashboard, all you have to do is press the Green arrow for 
+Once back on the dashboard, all you have to do is press the Green arrow on the job and, if all goes well, the Jenkins job should have a green checkmark next to it after refreshing the page once the build is completed.
