@@ -12,19 +12,15 @@ Built using the [*Spring Framework*](https://spring.io/) (Java) and [*React*](ht
 
 # Technologies
 
-* [**Spring Framework**](https://spring.io/) - for the back-end server
-
-* [**React**](https://react.dev/) - for the front-end server (governs the graphical UI). Used the *TypeScript* version for this application.
-
-* [**Tailwind CSS**](https://tailwindcss.com/) - CSS utility classes primarily used on markup (TSX)
-
-* [**Hibernate**](https://hibernate.org/) - object-relational mapping (ORM) tool of choice to ease the creation of the database.
-
-* [**MySQL**](https://www.mysql.com/) - database used.
-
-* [**Docker**](https://www.docker.com/) - used to create images and containers for the needed servers.
-
-* [**Jenkins**](https://www.jenkins.io/) - used to automate the entire build process.
+| Technology | Description |
+|--- |--- |
+| [**Spring Framework**](https://spring.io/) | Used for the [back-end server](./spring). |
+| [**React**](https://react.dev/) | Used for the front-end server. |
+| [**Tailwind CSS**](https://tailwindcss.com/) | CSS utility classes primarily used on markup. |
+| [**Hibernate**](https://hibernate.org/) | object-relational mapping (ORM) tool of choice to ease the creation of the database. |
+| [**MySQL**](https://www.mysql.com/) | Used for the database |
+| [**Docker**](https://www.docker.com/) | used to create images and containers for the needed servers. |
+| [**Jenkins**](https://www.jenkins.io/) | used to automate the entire build process. |
 
 # Building from Source
 There are multiple ways to build this application from source code:
