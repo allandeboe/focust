@@ -7,31 +7,23 @@ COPY . /usr/src/focust-spring
 #COPY ../.secrets/keystore/focust-spring.p12 /usr/src/focust-spring/src/main/resources/keystore
 
 WORKDIR /usr/src/focust-spring/src/main/resources
-RUN echo "" > application.properties && \
-    echo "### CREDENTIALS ###"
-RUN --mount=type=secret,id=MYSQL_ROOT_PASSWORD,env=MYSQL_ROOT_PASSWORD \
-    echo "spring.datasource.password = ${MYSQL_ROOT_PASSWORD}" > application.properties
-RUN --mount=type=secret,id=SPRING_SECURITY_PASSWORD,env=SPRING_SECURITY_PASSWORD \
-    echo "spring.security.user.password = ${SPRING_SECURITY_PASSWORD}" > application.properties
+RUN echo "" >> application.properties && \
+    echo "### CREDENTIALS ###" >> application.properties
+RUN --mount=type=secret,id=MYSQL_ROOT_PASSWORD,target=/root/mysql_root \
+    echo "spring.datasource.password = $(cat /root/mysql_root)" >> application.properties
+RUN --mount=type=secret,id=SPRING_SECURITY_PASSWORD,target=/root/spring-security \
+    echo "spring.security.user.password = $(cat /root/spring-security)" >> application.properties
 #RUN --mount=type=secret,id=ssl-keystore-password,env=SSL_KEYSTORE_PASSWORD \
 #    --mount=type=secret,id=ssl-key-password,env=SSL_KEY_PASSWORD \
-#    echo "server.ssl.key-store-password=${SSL_KEYSTORE_PASSWORD}" > application.properties && \
-#    echo "server.ssl.key-password=${SSL_KEY_PASSWORD}" > application.properties
+#    echo "server.ssl.key-store-password=$(cat /run/secrets/SSL_KEYSTORE_PASSWORD)" >> application.properties && \
+#    echo "server.ssl.key-password=$(cat /run/secrets/SSL_KEY_PASSWORD)" >> application.properties
 
 WORKDIR /usr/src/focust-spring
-RUN mvn verify
 
 ####################################################################################################
 
-### RUNNING STAGE ###
-FROM eclipse-temurin:23-jdk
-ENV JAR_FILE=api-server-0.0.1-SNAPSHOT.jar
-
-USER root
-RUN adduser -D focust-spring && \
-    mkdir /focust-spring && \
-    chown -R focust-spring /focust-spring
-COPY --from=build-stage /usr/src/focust-spring/target/JAR_FILE /focust-spring/JAR_FILE
-
-USER focust-spring
-ENTRYPOINT ["java", "-jar", "/api-server-0.0.1-SNAPSHOT.jar"]
+# Building, Testing, & Running the Spring Application is done
+# when running the container as the Spring Application uses
+# Testcontainers when testing, and it can't access the docker
+# daemon while the image is being built.
+ENTRYPOINT ["mvn", "spring-boot:run"]
