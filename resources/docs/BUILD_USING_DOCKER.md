@@ -23,13 +23,13 @@ docker run -d --name focust-mysql \
 ### SSL Certificate
 First, we need to a SSL certificate with `focust-spring` and `focust-spring.p12` being the *alias* and *keystore* respectively. You can do this by creating a **Self-Signed SSL Certificate**. If you want more information on how to create a Self-Signed SSL Certificate, I recommend the page ["How to Enable HTTPS in Spring Boot Application?"](https://www.geeksforgeeks.org/how-to-enable-https-in-spring-boot-application/) by *GeeksForGeeks*.
 
-I recommend placing the generated `.p12` file into a hidden directory `.secrets` in the main project directory.
+I recommend placing the generated `.p12` file into the `./spring/src/main/resources/.keystore` directory. We will also need the password for the keystore later.
 
 > [!IMPORTANT]
 > changing the alias and keystore of the SSL Certificate should be reflected in the `./spring/src/main/resources/application.properties` file with the properties `server.ssl.key-store-alias` and `server.ssl.key-store`, respectively. Note that the `server.ssl.key-store` property needs to accept a value of `classpath:/keystore/[KEYSTORE]`, where `[KEYSTORE]` is the keystore value.
 
 ### Build Docker Image
-Now, before we go onto building the container, we need to create specific environment variables that will contain the secrets needed, which are just passwords for the *MySQL Database* and *Spring Security*. create the files `/.secrets/mysql-root` and `/.secrets/spring-security` on the main directory to just contain the passwords of each respectively.
+Now, before we go onto building the container, we need to create specific environment variables that will contain the secrets needed, which are just passwords for the *MySQL Database*, *Spring Security*, and the *SSL Keystore*. create the files `/.secrets/mysql-root`, `/.secrets/spring-security`, and `/.secrets/ssl-keystore` on the main directory to just contain the passwords of each respectively.
 
 After setting that, we can go ahead and run the `docker build` command after going to the `./spring` directory, making sure that we include those secrets.
 
@@ -37,7 +37,8 @@ After setting that, we can go ahead and run the `docker build` command after goi
 docker build \
     --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
     --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
-    . -t allandeboe/focust-spring
+    --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/ssl-keystore" \
+    . -t allandeboe/focust-spring:0.0.2
 ```
 
 ### Run Docker Container
@@ -50,6 +51,6 @@ docker run -d --name focust-spring \
     --network spring-mysql \
     --restart=always \
     --volume /var/run/docker.sock:/var/run/docker.sock \
-    -p 8080:8443 \
-    allandeboe/focust-spring
+    -p 8443:8443 \
+    allandeboe/focust-spring:0.0.2
 ```

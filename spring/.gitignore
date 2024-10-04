@@ -34,3 +34,10 @@ build/
 
 ### Custom Batch Files ###
 run.bat
+
+### SSL Certificates ###
+src/main/resources/.keystore
+
+### Testcontainers ###
+# (Contains my (Docker host) IP address and don't want to leak that!)
+src/main/resources/.testcontainers.properties

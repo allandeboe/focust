@@ -14,9 +14,12 @@ The Spring application uses *Java JDK 23*.
 | **Spring Boot Actuator** | `3.3.4`[^1] | Allows monitoring of the health of the back-end server. |
 | **Spring Security** | `3.3.4`[^1] | Used for security-related configuration and functionality. |
 | **Spring Data JPA** | `3.3.4`[^1] | Allows use of *Jakarta* (JPA) and [*Hibernate*](https://hibernate.org/) |
-| **Lombok** | `~`[^1] | Reduces common boilerplate code. |
-| **Testcontainers** | `~`[^1] | Used to create a lightweight MySQL database for testing purposes. |
-| **MySQL JDBC Driver** | `~`[^1] | Allows the server to interact with the MySQL database. |
+| **Lombok** | `1.18.34`[^1] | Reduces common boilerplate code. |
+| **Testcontainers** | `1.19.8`[^1] | Used to create a lightweight MySQL database for testing purposes. |
+| **MySQL JDBC Driver** | `8.3.0`[^1] | Allows the server to interact with the MySQL database. |
 | **JGit** | `7.0.0.202409031743-r` | Allows the application to interact with [git](https://git-scm.com/). |
+| **JUnit** | `4.13.2`[^2] | Used to create (unit) tests in Java. Includes [JUnit Jupiter]() |
+| **Mockito** | `5.11.0`[^2] | Used to easily create mocks for testing. |
 
 [^1]: `3.3.4` is the version of Spring Boot used; generated as a result of [Spring Initializr](../resources/images/spring-initializr.png).
+[^2]: These came with the `spring-boot-starter-test` Maven dependency.

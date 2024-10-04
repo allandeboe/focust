@@ -4,7 +4,6 @@
 FROM maven:3.9.9-eclipse-temurin-23 AS build-stage
 
 COPY . /usr/src/focust-spring
-#COPY ../.secrets/keystore/focust-spring.p12 /usr/src/focust-spring/src/main/resources/keystore
 
 WORKDIR /usr/src/focust-spring/src/main/resources
 RUN echo "" >> application.properties && \
@@ -13,10 +12,8 @@ RUN --mount=type=secret,id=MYSQL_ROOT_PASSWORD,target=/root/mysql_root \
     echo "spring.datasource.password = $(cat /root/mysql_root)" >> application.properties
 RUN --mount=type=secret,id=SPRING_SECURITY_PASSWORD,target=/root/spring-security \
     echo "spring.security.user.password = $(cat /root/spring-security)" >> application.properties
-#RUN --mount=type=secret,id=ssl-keystore-password,env=SSL_KEYSTORE_PASSWORD \
-#    --mount=type=secret,id=ssl-key-password,env=SSL_KEY_PASSWORD \
-#    echo "server.ssl.key-store-password=$(cat /run/secrets/SSL_KEYSTORE_PASSWORD)" >> application.properties && \
-#    echo "server.ssl.key-password=$(cat /run/secrets/SSL_KEY_PASSWORD)" >> application.properties
+RUN --mount=type=secret,id=SSL_KEYSTORE_PASSWORD,target=/root/ssl-keystore \
+    echo "server.ssl.key-store-password = $(cat /root/ssl-keystore)" >> application.properties
 
 WORKDIR /usr/src/focust-spring
 
@@ -26,4 +23,4 @@ WORKDIR /usr/src/focust-spring
 # when running the container as the Spring Application uses
 # Testcontainers when testing, and it can't access the docker
 # daemon while the image is being built.
-ENTRYPOINT ["mvn", "spring-boot:run"]
+ENTRYPOINT ["mvn", "spring-boot:test-run"]
