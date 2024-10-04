@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.1
+ * @version 0.0.2
  * @since 0.0.1
  */
 package com.focust.api;
@@ -25,34 +25,22 @@ package com.focust.api;
 ///////////////////////////////////////////////////////////////////////////
 
 // Spring Framework //
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 ///////////////////////////////////////////////////////////////////////////
 
 @SpringBootApplication
+@EnableAutoConfiguration(exclude={
+		// This disables the "/login" page
+		SecurityAutoConfiguration.class
+})
 public class ApiServerApplication {
-
-	@Autowired
-	Environment environment;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiServerApplication.class, args);
-	}
-
-	@Bean
-	public WebMvcConfigurer corsConfiguration() {
-		return new WebMvcConfigurer() {
-			public void addCorsMapping(CorsRegistry registry) {
-				String url = "http://localhost:" + environment.getProperty("server.port");
-				registry.addMapping("/**").allowedOrigins(url);
-			}
-		};
 	}
 
 }

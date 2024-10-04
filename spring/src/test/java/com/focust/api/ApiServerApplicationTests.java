@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.1
+ * @version 0.0.2
  * @since 0.0.1
  */
 package com.focust.api;
@@ -29,11 +29,9 @@ import org.junit.jupiter.api.Test;
 
 // Spring Framework //
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 ///////////////////////////////////////////////////////////////////////////
 
-@Import(TestcontainersConfiguration.class)
 @SpringBootTest
 class ApiServerApplicationTests {
 

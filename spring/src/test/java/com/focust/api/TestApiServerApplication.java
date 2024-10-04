@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.1
+ * @version 0.0.2
  * @since 0.0.1
  */
 package com.focust.api;
@@ -32,7 +32,8 @@ import org.springframework.boot.SpringApplication;
 public class TestApiServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main).with(TestcontainersConfiguration.class).run(args);
+		SpringApplication.from(ApiServerApplication::main)
+				.run(args);
 	}
 
 }

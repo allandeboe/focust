@@ -54,6 +54,7 @@
 		</dependency>
 
 		<!-- Spring Framework Testing Dependencies -->
+		<!-- (Contains JUnit, Jupiter, & Mockito) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
