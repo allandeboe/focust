@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.1
  */
 package com.focust.api;
@@ -34,7 +34,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={
-		// This disables the "/login" page
+		// This disables the default "/login" page
 		SecurityAutoConfiguration.class
 })
 public class ApiServerApplication {

@@ -22,10 +22,10 @@
  * @see com.focust.api.security.SecurityConfiguration
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.2
  */
-package com.focust.api;
+package com.focust.api.security;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class CorsConfigurationTests {
+public class CorsConfigurationTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,7 +61,7 @@ class CorsConfigurationTests {
     private Environment environment;
 
     @Test
-    public final void testAllowedOriginsAndMethods() throws Exception {
+    public final void do_AccessOriginsAndMethods_match() throws Exception {
         final List<String> expectedOrigins = Arrays.asList(
                 "https://localhost:" + environment.getProperty("server.port")
         );

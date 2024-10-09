@@ -1,5 +1,5 @@
 /**
- * ApiServerApplicationTests.java - Tests for the Spring Application
+ * BCryptHashingUnitTests.java - Tests regarding using the "BCryptHash" class
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,27 +16,50 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * This class is used to ensure that the BCryptHash works
+ * as expected.
+ *
+ * @see com.focust.api.security.bcrypt.BCryptHash
+ * @see com.focust.api.security.SecurityConfiguration
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.security;
 
 ///////////////////////////////////////////////////////////////////////////
 
+// Focust //
+import com.focust.api.security.bcrypt.BCryptHash;
+
 // JUnit //
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 // Spring Framework //
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+// Static Imports //
+import static org.assertj.core.api.Assertions.assertThat;
 
 ///////////////////////////////////////////////////////////////////////////
 
 @SpringBootTest
-class ApiServerApplicationTests {
+public class BCryptHashingUnitTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Test
+    public final void givenBCryptHash_whenGettingHashString_hashStringsAreEqual() {
+
+        String testPassword = "abc123xyz";
+        final String testHashString = passwordEncoder.encode(testPassword);
+
+        BCryptHash testHash = new BCryptHash(testHashString);
+        assertThat(testHash.toString()).isEqualTo(testHashString);
+    }
 
 }

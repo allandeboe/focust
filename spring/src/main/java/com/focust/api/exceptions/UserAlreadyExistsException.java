@@ -1,5 +1,5 @@
 /**
- * TestServerApplication.java - Runs Tests on Spring Application
+ * UserAlreadyExistsException.java - Thrown if a given user already exists.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,22 +18,10 @@
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.exceptions;
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Spring Framework //
-import org.springframework.boot.SpringApplication;
-
-///////////////////////////////////////////////////////////////////////////
-
-public class TestApiServerApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main)
-				.run(args);
-	}
-
-}
+public final class UserAlreadyExistsException extends RuntimeException { }

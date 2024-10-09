@@ -17,12 +17,15 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.2
  */
 package com.focust.api.security;
 
 ///////////////////////////////////////////////////////////////////////////
+
+// Focust //
+import com.focust.api.security.jwt.JWTAuthenticationFilter;
 
 // Spring Framework //
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +34,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -48,6 +55,9 @@ public class SecurityConfiguration {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors_config = new CorsConfiguration();
@@ -60,12 +70,14 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http_security) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        http_security.requiresChannel(channel -> channel.anyRequest().requiresSecure());
-        http_security.authorizeHttpRequests(request -> request.anyRequest().permitAll());
+        httpSecurity.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+        httpSecurity.authorizeHttpRequests(request -> request.anyRequest().permitAll());
 
-        return http_security.build();
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
     }
 
 }

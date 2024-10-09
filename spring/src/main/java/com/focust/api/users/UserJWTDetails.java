@@ -1,5 +1,5 @@
 /**
- * TestServerApplication.java - Runs Tests on Spring Application
+ * UserJWTDetails.java - used to create JWT tokens off of user details.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * This immutable, data class merely exists
+ *
+ * @see com.focust.api.users.User
+ * @see com.focust.api.security.jwt.JWTService
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.users;
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Spring Framework //
-import org.springframework.boot.SpringApplication;
+// Project Lombok //
+import lombok.Getter;
 
 ///////////////////////////////////////////////////////////////////////////
 
-public class TestApiServerApplication {
+public final class UserJWTDetails {
 
-	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main)
-				.run(args);
-	}
+    @Getter private final String email;
+
+    public UserJWTDetails(User user) {
+        this.email = user.getEmail();
+    }
 
 }
