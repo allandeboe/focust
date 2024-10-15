@@ -1,5 +1,5 @@
 /**
- * ApiServerApplicationTests.java - Tests for the Spring Application
+ * UseFocustRestAssured.java - Annotation for REST-Assured Extension
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,33 +16,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * This Annotation is primarily used to indicate that REST-Assured is used.
+ * @see com.focust.api.util.restassured.FocustRestAssuredExtension
+ *
+ * For this annotation to work properly, the test class must have the data
+ * members with the following types & annotations:
+ *
+ * - @Autowired Environment
+ * - @Autowired ResourceLoader
+ * - @LocalServerPort int
+ *
+ * For an example, here are a list of classes that have these:
+ * @see com.focust.api.controllers.UserIntegrationTests
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.util.restassured;
 
 ///////////////////////////////////////////////////////////////////////////
 
 // JUnit 5 (Jupiter) //
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-// Spring Framework //
-import org.springframework.boot.test.context.SpringBootTest;
-
-// Testcontainers //
-import org.testcontainers.junit.jupiter.Testcontainers;
+// Standard Java //
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 ///////////////////////////////////////////////////////////////////////////
 
-@Testcontainers
-@SpringBootTest
-class ApiServerApplicationTests {
-
-	@Test
-	void contextLoads() {
-		System.out.println();
-		System.out.println("|=== FOCUST TESTING ===|");
-	}
-
-}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@ExtendWith(FocustRestAssuredExtension.class)
+public @interface UseFocustRestAssured { }

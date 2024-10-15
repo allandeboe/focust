@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.1
  */
 package com.focust.api;
@@ -29,18 +29,27 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.ssl.SslBundles;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 ///////////////////////////////////////////////////////////////////////////
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude={
-		// This disables the "/login" page
+		// This disables the default "/login" page
 		SecurityAutoConfiguration.class
 })
 public class ApiServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiServerApplication.class, args);
+	}
+
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder, SslBundles sslBundles) {
+		return restTemplateBuilder.setSslBundle(sslBundles.getBundle("focust-spring")).build();
 	}
 
 }

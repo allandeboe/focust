@@ -1,5 +1,5 @@
 /**
- * TestServerApplication.java - Runs Tests on Spring Application
+ * UserRepository.java - JPA Repository for the "users" table.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * @see com.focust.api.users.User
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.users;
 
 ///////////////////////////////////////////////////////////////////////////
 
 // Spring Framework //
-import org.springframework.boot.SpringApplication;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 ///////////////////////////////////////////////////////////////////////////
 
-public class TestApiServerApplication {
+interface UserRepository extends JpaRepository<User, Long> {
 
-	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main)
-				.run(args);
-	}
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> findByEmail(@Param("email") String email);
 
 }

@@ -1,5 +1,5 @@
 /**
- * TestServerApplication.java - Runs Tests on Spring Application
+ * FocustMySQLExtension.java - JUnit 5 Test Extension for MySQL Testcontainer.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * This extension is responsible for setting up the MySQL Testcontainer
+ * for testing purposes.
+ * @see com.focust.api.util.testcontainers.FocustMySQLContainer
+ *
+ * You do not need to use this extension directly, as I have created a
+ * custom Annotation to do just that.
+ * @see com.focust.api.util.testcontainers.UseFocustMySQL
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.util.testcontainers;
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Spring Framework //
-import org.springframework.boot.SpringApplication;
+// JUnit 5 (Jupiter) //
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 ///////////////////////////////////////////////////////////////////////////
 
-public class TestApiServerApplication {
+public class FocustMySQLExtension implements BeforeAllCallback {
 
-	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main)
-				.run(args);
-	}
+    private FocustMySQLContainer mysql;
+
+    @Override
+    public void beforeAll(ExtensionContext context) {
+        mysql = FocustMySQLContainer.getInstance();
+        mysql.start();
+    }
 
 }

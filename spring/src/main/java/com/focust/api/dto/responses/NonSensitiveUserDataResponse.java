@@ -1,5 +1,5 @@
 /**
- * TestServerApplication.java - Runs Tests on Spring Application
+ * NonSensitiveUserDataResponse.java - Response containing non-sensitive user data.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,24 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
+ * @see com.focust.api.users.User
+ * @see com.focust.api.controllers.UserController
+ *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
- * @since 0.0.1
+ * @since 0.0.3
  */
-package com.focust.api;
+package com.focust.api.dto.responses;
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Spring Framework //
-import org.springframework.boot.SpringApplication;
+// Project Lombok //
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 ///////////////////////////////////////////////////////////////////////////
 
-public class TestApiServerApplication {
+@Getter
+@RequiredArgsConstructor
+public final class NonSensitiveUserDataResponse {
 
-	public static void main(String[] args) {
-		SpringApplication.from(ApiServerApplication::main)
-				.run(args);
-	}
+    private final Long id;
+    private final String email;
 
 }
