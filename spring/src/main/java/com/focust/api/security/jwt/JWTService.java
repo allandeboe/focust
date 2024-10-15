@@ -38,9 +38,15 @@ import com.focust.api.users.UserJWTDetails;
 // Spring Framework //
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 // Standard Java //
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -49,8 +55,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -64,12 +70,15 @@ public class JWTService {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     /**
      * @param userDetails a UserJWTDetails object containing relevant details of the user
      * @return An Optional<String> object that contains either nothing or the newly token token
      * @throws NoSuchAlgorithmException or InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
-    public final Optional<String> generateToken(UserJWTDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public final Optional<String> generateAccessToken(UserJWTDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
         try {
             Instant currentTime = Instant.now();
             return Optional.ofNullable(JWT.create()
@@ -79,7 +88,8 @@ public class JWTService {
                     .withIssuedAt(Date.from(currentTime))
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
-        catch (JWTCreationException e) {
+        catch (JWTCreationException | IOException e) {
+            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
@@ -95,27 +105,29 @@ public class JWTService {
             DecodedJWT validatedToken = this.getValidatedToken(jwtToken);
             return Optional.ofNullable(validatedToken.getClaim("email").toString());
         }
-        catch (JWTVerificationException e) {
+        catch (JWTVerificationException | IOException e) {
             return Optional.empty();
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////
 
-    private DecodedJWT getValidatedToken(String jwtToken) throws JWTVerificationException, NoSuchAlgorithmException, InvalidKeySpecException {
+    private DecodedJWT getValidatedToken(String jwtToken) throws IOException, JWTVerificationException, NoSuchAlgorithmException, InvalidKeySpecException {
         JWTVerifier verifier = JWT.require(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey()))
                 .withIssuer(JWTService.issuer)
                 .build();
         return verifier.verify(jwtToken.replace("Bearer ", ""));
     }
 
-    private RSAPublicKey getPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] decoded_public_key = Base64.getDecoder().decode(environment.getProperty("rsa.public-key"));
+    private RSAPublicKey getPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        File public_key_file = this.resourceLoader.getResource(Objects.requireNonNull(environment.getProperty("jwt.rsa.public-key"))).getFile();
+        byte[] decoded_public_key =  Files.readAllBytes(public_key_file.toPath());
         return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded_public_key));
     }
 
-    private RSAPrivateKey getPrivateKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] decoded_private_key = Base64.getDecoder().decode(environment.getProperty("rsa.private-key"));
+    private RSAPrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        File private_key_file = this.resourceLoader.getResource(Objects.requireNonNull(environment.getProperty("jwt.rsa.private-key"))).getFile();
+        byte[] decoded_private_key = Files.readAllBytes(private_key_file.toPath());
         return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded_private_key));
     }
 

@@ -3,6 +3,11 @@
 ### BUILDING & TESTING STAGE ###
 FROM maven:3.9.9-eclipse-temurin-23 AS build-stage
 
+RUN apt-get update && \
+    apt-get install -y \
+    openssl \
+    wget
+
 COPY . /usr/src/focust-spring
 
 WORKDIR /usr/src/focust-spring/src/main/resources
@@ -13,9 +18,19 @@ RUN --mount=type=secret,id=MYSQL_ROOT_PASSWORD,target=/root/mysql_root \
 RUN --mount=type=secret,id=SPRING_SECURITY_PASSWORD,target=/root/spring-security \
     echo "spring.security.user.password = $(cat /root/spring-security)" >> application.properties
 RUN --mount=type=secret,id=SSL_KEYSTORE_PASSWORD,target=/root/ssl-keystore \
-    echo "server.ssl.key-store-password = $(cat /root/ssl-keystore)" >> application.properties
+    echo "spring.ssl.bundle.jks.focust-spring.keystore.password = $(cat /root/ssl-keystore)" >> application.properties && \
+    keytool -importcert -noprompt -trustcacerts -alias focust-spring \
+    -file ./.keystore/focust-spring-client.crt \
+    -keystore $JAVA_HOME/lib/security/cacerts \
+    -storepass $(cat /root/ssl-keystore)
+
+COPY ./src/main/resources/.keystore/focust-spring-client.crt /usr/local/share/ca-certificates/focust-spring-client.crt
+RUN update-ca-certificates 
 
 WORKDIR /usr/src/focust-spring
+
+RUN mkdir ./src/test/resources
+RUN cp -a ./src/main/resources/. ./src/test/resources
 
 ####################################################################################################
 
@@ -23,4 +38,5 @@ WORKDIR /usr/src/focust-spring
 # when running the container as the Spring Application uses
 # Testcontainers when testing, and it can't access the docker
 # daemon while the image is being built.
-ENTRYPOINT ["mvn", "spring-boot:test-run"]
+RUN chmod -x ./run.sh
+ENTRYPOINT ["/bin/bash", "./run.sh"]

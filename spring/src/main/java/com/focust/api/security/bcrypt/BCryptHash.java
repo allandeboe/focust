@@ -72,9 +72,12 @@ public final class BCryptHash implements Serializable {
 
     }
 
+    /**
+     * @return the bCrypt hash string.
+     */
     @Override
     public String toString() {
-        return "$" + this.version.getVersion() + "$" + this.strength + "$" + this.salt + this.hash;
+        return this.version.getVersion() + "$" + this.strength + "$" + this.salt + this.hash;
     }
 
 }

@@ -29,6 +29,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.ssl.SslBundles;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +45,11 @@ public class ApiServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiServerApplication.class, args);
+	}
+
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder, SslBundles sslBundles) {
+		return restTemplateBuilder.setSslBundle(sslBundles.getBundle("focust-spring")).build();
 	}
 
 }

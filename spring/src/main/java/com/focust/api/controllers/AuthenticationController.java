@@ -52,6 +52,8 @@ import org.springframework.web.bind.annotation.RestController;
 // Standard Java //
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -68,24 +70,28 @@ public class AuthenticationController {
 
     /**
      * @param request a RegisterUserRequest representing the JSON Request
-     * @return an Http Response, with JWT Access Token generated if a new user is created.
+     * @return an HTTP Response, with JWT Access Token generated if a new user is created.
      */
     @PostMapping(value="/register", produces="application/json")
     public final ResponseEntity<Object> registerUser(@RequestBody RegisterUserRequest request) {
         try {
             UserJWTDetails userDetails = userService.createUser(request);
-            Optional<String> token = jwtService.generateToken(userDetails);
+            Optional<String> token = jwtService.generateAccessToken(userDetails);
             if (token.isEmpty()) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "The generated JWT Token is empty!");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(new JWTAccessTokenResponse(token.get()), HttpStatus.CREATED);
+            return new ResponseEntity<>(new JWTAccessTokenResponse(token.get(), userDetails.getId()), HttpStatus.CREATED);
         }
 
         // To ensure someone cannot just get the users authentication token
         // by trying to register an existing user, the body does not return
         // JWT Tokens
         catch (UserAlreadyExistsException e) {
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
         // "NoSuchAlgorithmException" and "InvalidKeySpecException" are thrown as a
@@ -96,34 +102,42 @@ public class AuthenticationController {
         // statement here to ensure that the server can still run while also making sure
         // that someone cannot get unauthorized access to user data or functionality.
         catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Something went horribly wrong when registering the user!");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     /**
      * @param request a SignInUserRequest representing the JSON Request
-     * @return an HTTP Response, with JWT Access Token generated if the log in has been successful.
+     * @return an HTTP Response, with JWT Access Token generated if the login has been successful.
      */
     @PostMapping(value="/login", produces="application/json")
     public final ResponseEntity<Object> signInUser(@RequestBody SignInUserRequest request) {
         try {
             UserJWTDetails userDetails = userService.verifyUserSignIn(request);
-            Optional<String> token = jwtService.generateToken(userDetails);
+            Optional<String> token = jwtService.generateAccessToken(userDetails);
             if (token.isEmpty()) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "The generated JWT Token is empty!");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(new JWTAccessTokenResponse(token.get()), HttpStatus.OK);
         }
 
         // To ensure someone cannot just get the users authentication token
-        // by trying to either login as a user that doesn't exist or done a failed log in
+        // by trying to either login as a user that doesn't exist or done a failed login
         // attempt, the body does not return JWT Tokens
         catch (UserNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         }
         catch (IncorrectSignInException e) {
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "The provided username (email) or password is incorrect. Please try again!");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // "NoSuchAlgorithmException" and "InvalidKeySpecException" are thrown as a
@@ -134,7 +148,9 @@ public class AuthenticationController {
         // statement here to ensure that the server can still run while also making sure
         // that someone cannot get unauthorized access to user data or functionality.
         catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Something went horribly wrong when registering the user!");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

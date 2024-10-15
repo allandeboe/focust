@@ -34,11 +34,14 @@ import lombok.Getter;
 
 ///////////////////////////////////////////////////////////////////////////
 
+@Getter
 public final class UserJWTDetails {
 
-    @Getter private final String email;
+    private final long id;
+    private final String email;
 
-    public UserJWTDetails(User user) {
+    UserJWTDetails(User user) {
+        this.id = user.getId();
         this.email = user.getEmail();
     }
 

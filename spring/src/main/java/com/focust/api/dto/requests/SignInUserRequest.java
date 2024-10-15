@@ -32,10 +32,15 @@ import lombok.RequiredArgsConstructor;
 
 ///////////////////////////////////////////////////////////////////////////
 
+@Getter
 @RequiredArgsConstructor
-public final class SignInUserRequest {
+public final class SignInUserRequest implements Request {
 
-    @Getter private final String email;
-    @Getter private final String password;
+    private final String email;
+    private final String password;
 
+    @Override
+    public String getJSON() {
+        return "{ \"email\": \"" + this.email + "\", \"password\": \"" + this.password + "\" }";
+    }
 }

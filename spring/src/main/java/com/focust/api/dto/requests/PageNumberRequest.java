@@ -1,5 +1,5 @@
 /**
- * RegisterUserRequest.java - Request DTO for creating a new user
+ * PageNumberRequest.java - Request for
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @see com.focust.api.users.User
+ * @see com.focust.api.controllers.UserController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
@@ -28,18 +29,19 @@ package com.focust.api.dto.requests;
 
 // Project Lombok //
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 ///////////////////////////////////////////////////////////////////////////
 
-@RequiredArgsConstructor
-public final class RegisterUserRequest implements Request {
+@Setter
+@Getter
+public final class PageNumberRequest implements Request {
 
-    @Getter private final String email;
-    @Getter private final String password;
+    private int pageNumber = 1;
 
     @Override
     public String getJSON() {
-        return "{ \"email\": \"" + this.email + "\", \"password\": \"" + this.password + "\" }";
+        return "{ \"pageNumber\": " + pageNumber + " }";
     }
+
 }

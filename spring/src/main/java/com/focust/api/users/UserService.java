@@ -33,6 +33,8 @@ package com.focust.api.users;
 import com.focust.api.controllers.AuthenticationController;
 import com.focust.api.dto.requests.RegisterUserRequest;
 import com.focust.api.dto.requests.SignInUserRequest;
+import com.focust.api.dto.responses.NonSensitiveUserDataResponse;
+import com.focust.api.exceptions.EmptyPageException;
 import com.focust.api.exceptions.IncorrectSignInException;
 import com.focust.api.exceptions.UserAlreadyExistsException;
 import com.focust.api.exceptions.UserNotFoundException;
@@ -40,12 +42,15 @@ import com.focust.api.security.bcrypt.BCryptHash;
 
 // Spring Framework //
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 // Standard Java //
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -55,10 +60,8 @@ public class UserService {
 
     @Autowired private UserRepository userRepository;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 12);
-    }
+    // UserService is the only place where password encoding and matching are even needed.
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 12);
 
     /**
      * This function is primarily used when verifying a JWT Token
@@ -91,7 +94,7 @@ public class UserService {
     public final UserJWTDetails verifyUserSignIn(SignInUserRequest request) throws UserNotFoundException, IncorrectSignInException {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(UserNotFoundException::new);
 
-        if (!passwordEncoder().matches(request.getPassword(), user.getPasswordHash().toString())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash().toString())) {
             throw new IncorrectSignInException();
         }
 
@@ -112,7 +115,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) throw new UserAlreadyExistsException();
 
-        BCryptHash hash = new BCryptHash(passwordEncoder().encode(request.getPassword()));
+        BCryptHash hash = new BCryptHash(passwordEncoder.encode(request.getPassword()));
 
         User newUser = new User();
         newUser.setEmail(request.getEmail());
@@ -122,6 +125,34 @@ public class UserService {
         return new UserJWTDetails(newUser);
     }
 
-    
+    /**
+     * Used to get non-sensitive data regarding the user.
+     *
+     * @param id the id of the user
+     * @return a NonSensitiveUserDataResponse representing the JSON response.
+     * @throws UserNotFoundException if the user was unable to be found.
+     */
+    public final NonSensitiveUserDataResponse getNonSensitiveUserDetails(long id) throws UserNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return new NonSensitiveUserDataResponse(user.getId(), user.getEmail());
+    }
+
+    /**
+     * @param page Pageable representing the page
+     * @return a list of user data encoded in NonSensitiveUserDataResponse objects
+     * @throws EmptyPageException if there are
+     */
+    public final List<NonSensitiveUserDataResponse> getUsers(Pageable page) throws EmptyPageException {
+        Page<User> pageEntries = userRepository.findAll(page);
+        if (pageEntries.isEmpty()) {
+            throw new EmptyPageException();
+        }
+        List<NonSensitiveUserDataResponse> list = new ArrayList<>();
+        for (User entry: pageEntries) {
+            NonSensitiveUserDataResponse response = new NonSensitiveUserDataResponse(entry.getId(), entry.getEmail());
+            list.add(response);
+        }
+        return list;
+    }
 
 }

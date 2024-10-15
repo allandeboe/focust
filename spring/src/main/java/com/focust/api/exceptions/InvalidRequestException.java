@@ -1,5 +1,5 @@
 /**
- * RegisterUserRequest.java - Request DTO for creating a new user
+ * InvalidRequestException.java - Thrown if a given request is invalid
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,30 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * ------------------------------------------------------------------------
  *
- * @see com.focust.api.users.User
- *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */
-package com.focust.api.dto.requests;
+package com.focust.api.exceptions;
 
 ///////////////////////////////////////////////////////////////////////////
 
-// Project Lombok //
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-///////////////////////////////////////////////////////////////////////////
-
-@RequiredArgsConstructor
-public final class RegisterUserRequest implements Request {
-
-    @Getter private final String email;
-    @Getter private final String password;
-
-    @Override
-    public String getJSON() {
-        return "{ \"email\": \"" + this.email + "\", \"password\": \"" + this.password + "\" }";
-    }
-}
+public final class InvalidRequestException extends RuntimeException { }

@@ -32,14 +32,18 @@ package com.focust.api.dto.responses;
 ///////////////////////////////////////////////////////////////////////////
 
 // Project Lombok //
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 ///////////////////////////////////////////////////////////////////////////
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 public final class JWTAccessTokenResponse {
 
     @Getter private final String jwtToken;
+    @Getter private long userId;
 
 }

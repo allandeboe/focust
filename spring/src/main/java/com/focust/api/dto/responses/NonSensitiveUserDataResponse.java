@@ -1,5 +1,5 @@
 /**
- * RegisterUserRequest.java - Request DTO for creating a new user
+ * NonSensitiveUserDataResponse.java - Response containing non-sensitive user data.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,12 +17,13 @@
  * ------------------------------------------------------------------------
  *
  * @see com.focust.api.users.User
+ * @see com.focust.api.controllers.UserController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */
-package com.focust.api.dto.requests;
+package com.focust.api.dto.responses;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -32,14 +33,11 @@ import lombok.RequiredArgsConstructor;
 
 ///////////////////////////////////////////////////////////////////////////
 
+@Getter
 @RequiredArgsConstructor
-public final class RegisterUserRequest implements Request {
+public final class NonSensitiveUserDataResponse {
 
-    @Getter private final String email;
-    @Getter private final String password;
+    private final Long id;
+    private final String email;
 
-    @Override
-    public String getJSON() {
-        return "{ \"email\": \"" + this.email + "\", \"password\": \"" + this.password + "\" }";
-    }
 }

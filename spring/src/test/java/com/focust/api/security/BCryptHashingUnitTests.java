@@ -20,7 +20,6 @@
  * as expected.
  *
  * @see com.focust.api.security.bcrypt.BCryptHash
- * @see com.focust.api.security.SecurityConfiguration
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
  * @version 0.0.3
@@ -33,12 +32,11 @@ package com.focust.api.security;
 // Focust //
 import com.focust.api.security.bcrypt.BCryptHash;
 
-// JUnit //
-import org.junit.Test;
+// JUnit 5 (Jupiter) //
+import org.junit.jupiter.api.Test;
 
 // Spring Framework //
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 // Static Imports //
@@ -46,11 +44,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 ///////////////////////////////////////////////////////////////////////////
 
-@SpringBootTest
 public class BCryptHashingUnitTests {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 12);
 
     @Test
     public final void givenBCryptHash_whenGettingHashString_hashStringsAreEqual() {
