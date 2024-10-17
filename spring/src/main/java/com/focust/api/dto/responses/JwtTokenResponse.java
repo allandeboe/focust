@@ -1,5 +1,5 @@
 /**
- * JWTAccessTokenResponse.java - DTO Response containing just a JWT Access Token
+ * JwtAccessTokenResponse.java - DTO Response containing just a JWT Access Token
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
  * which merely contains a JWT Token that the client is meant to store
  * for later.
  *
- * @see com.focust.api.security.jwt.JWTService
+ * @see com.focust.api.security.jwt.JwtService
  * @see com.focust.api.controllers.AuthenticationController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.dto.responses;
@@ -35,15 +35,14 @@ package com.focust.api.dto.responses;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 ///////////////////////////////////////////////////////////////////////////
 
 @RequiredArgsConstructor
 @AllArgsConstructor
-public final class JWTAccessTokenResponse {
+public final class JwtTokenResponse {
 
-    @Getter private final String jwtToken;
+    @Getter private final String accessToken;
     @Getter private long userId;
 
 }

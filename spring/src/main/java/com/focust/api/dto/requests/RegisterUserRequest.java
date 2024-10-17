@@ -19,7 +19,7 @@
  * @see com.focust.api.users.User
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.dto.requests;
@@ -39,7 +39,7 @@ public final class RegisterUserRequest implements Request {
     @Getter private final String password;
 
     @Override
-    public String getJSON() {
+    public String getJson() {
         return "{ \"email\": \"" + this.email + "\", \"password\": \"" + this.password + "\" }";
     }
 }

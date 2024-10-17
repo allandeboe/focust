@@ -22,7 +22,7 @@
  * @see com.focust.api.users.User
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.controllers;
@@ -33,14 +33,16 @@ package com.focust.api.controllers;
 import com.focust.api.exceptions.IncorrectSignInException;
 import com.focust.api.exceptions.UserAlreadyExistsException;
 import com.focust.api.exceptions.UserNotFoundException;
-import com.focust.api.dto.responses.JWTAccessTokenResponse;
-import com.focust.api.security.jwt.JWTService;
+import com.focust.api.dto.responses.JwtTokenResponse;
+import com.focust.api.security.jwt.JwtService;
 import com.focust.api.dto.requests.RegisterUserRequest;
 import com.focust.api.dto.requests.SignInUserRequest;
-import com.focust.api.users.UserJWTDetails;
+import com.focust.api.users.UserJwtDetails;
 import com.focust.api.users.UserService;
 
 // Spring Framework //
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,23 +68,31 @@ public class AuthenticationController {
     private UserService userService;
 
     @Autowired
-    private JWTService jwtService;
+    private JwtService jwtService;
 
     /**
      * @param request a RegisterUserRequest representing the JSON Request
      * @return an HTTP Response, with JWT Access Token generated if a new user is created.
      */
     @PostMapping(value="/register", produces="application/json")
-    public final ResponseEntity<Object> registerUser(@RequestBody RegisterUserRequest request) {
+    public final ResponseEntity<Object> registerUser(@RequestBody RegisterUserRequest request, HttpServletResponse servletResponse) {
         try {
-            UserJWTDetails userDetails = userService.createUser(request);
-            Optional<String> token = jwtService.generateAccessToken(userDetails);
-            if (token.isEmpty()) {
+            UserJwtDetails userDetails = userService.createUser(request);
+            Optional<String> accessToken = jwtService.generateAccessToken(userDetails);
+            Optional<String> refreshToken = jwtService.generateRefreshToken(userDetails);
+            if (accessToken.isEmpty() || refreshToken.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "The generated JWT Token is empty!");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(new JWTAccessTokenResponse(token.get(), userDetails.getId()), HttpStatus.CREATED);
+            Cookie refreshTokenCookie = new Cookie ("jwt-refresh-token", refreshToken.get());
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
+            refreshTokenCookie.setSecure(true);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            servletResponse.addCookie(refreshTokenCookie);
+
+            return new ResponseEntity<>(new JwtTokenResponse(accessToken.get(), userDetails.getId()), HttpStatus.CREATED);
         }
 
         // To ensure someone cannot just get the users authentication token
@@ -114,16 +124,24 @@ public class AuthenticationController {
      * @return an HTTP Response, with JWT Access Token generated if the login has been successful.
      */
     @PostMapping(value="/login", produces="application/json")
-    public final ResponseEntity<Object> signInUser(@RequestBody SignInUserRequest request) {
+    public final ResponseEntity<Object> signInUser(@RequestBody SignInUserRequest request, HttpServletResponse servletResponse) {
         try {
-            UserJWTDetails userDetails = userService.verifyUserSignIn(request);
-            Optional<String> token = jwtService.generateAccessToken(userDetails);
-            if (token.isEmpty()) {
+            UserJwtDetails userDetails = userService.verifyUserSignIn(request);
+            Optional<String> accessToken = jwtService.generateAccessToken(userDetails);
+            Optional<String> refreshToken = jwtService.generateRefreshToken(userDetails);
+            if (accessToken.isEmpty() || refreshToken.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "The generated JWT Token is empty!");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>(new JWTAccessTokenResponse(token.get()), HttpStatus.OK);
+            Cookie refreshTokenCookie = new Cookie ("jwt-refresh-token", refreshToken.get());
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
+            refreshTokenCookie.setSecure(true);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            servletResponse.addCookie(refreshTokenCookie);
+
+            return new ResponseEntity<>(new JwtTokenResponse(accessToken.get(), userDetails.getId()), HttpStatus.OK);
         }
 
         // To ensure someone cannot just get the users authentication token
