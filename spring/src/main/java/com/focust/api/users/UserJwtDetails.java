@@ -1,5 +1,5 @@
 /**
- * UserJWTDetails.java - used to create JWT tokens off of user details.
+ * UserJwtDetails.java - used to create JWT tokens off of user details.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
  * This immutable, data class merely exists
  *
  * @see com.focust.api.users.User
- * @see com.focust.api.security.jwt.JWTService
+ * @see com.focust.api.security.jwt.JwtService
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.users;
@@ -35,12 +35,12 @@ import lombok.Getter;
 ///////////////////////////////////////////////////////////////////////////
 
 @Getter
-public final class UserJWTDetails {
+public final class UserJwtDetails {
 
     private final long id;
     private final String email;
 
-    UserJWTDetails(User user) {
+    UserJwtDetails(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
     }

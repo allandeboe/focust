@@ -22,7 +22,7 @@
  * @see com.focust.api.users.User
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.users;
@@ -41,6 +41,8 @@ import com.focust.api.exceptions.UserNotFoundException;
 import com.focust.api.security.bcrypt.BCryptHash;
 
 // Spring Framework //
+import com.focust.api.security.jwt.JwtAuthenticationFilter;
+import com.focust.api.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,37 +70,37 @@ public class UserService {
      * associated with the user. Emails are essentially usernames
      * in the context of the application, hence why this exists.
      *
-     * @see com.focust.api.security.jwt.JWTService
-     * @see com.focust.api.security.jwt.JWTAuthenticationFilter
+     * @see JwtService
+     * @see JwtAuthenticationFilter
      *
      * @param email the email of the user
      * @return a UserJWTDetails object based on the user with the email
      * @throws UserNotFoundException if the user with the email is not found
      */
-    public final UserJWTDetails getUserDetails(String email) throws UserNotFoundException {
+    public final UserJwtDetails getUserDetails(String email) throws UserNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-        return new UserJWTDetails(user);
+        return new UserJwtDetails(user);
     }
 
     /**
      * This function is used when verifying a user log in, to which,
      * if the login is successful, a JWT Token gets returned.
      *
-     * @see com.focust.api.security.jwt.JWTService
+     * @see JwtService
      * @see AuthenticationController
      *
      * @param request a SignInUserRequest representing the JSON request
      * @return a UserJWTDetails object based on the user with the email
      * @throws UserNotFoundException if the user with the email is not found
      */
-    public final UserJWTDetails verifyUserSignIn(SignInUserRequest request) throws UserNotFoundException, IncorrectSignInException {
+    public final UserJwtDetails verifyUserSignIn(SignInUserRequest request) throws UserNotFoundException, IncorrectSignInException {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash().toString())) {
             throw new IncorrectSignInException();
         }
 
-        return new UserJWTDetails(user);
+        return new UserJwtDetails(user);
     }
 
     /**
@@ -110,7 +112,7 @@ public class UserService {
      * @param request a RegisterUserRequest representing the JSON request
      * @return a UserJWTDetails object used to generate an access token
      */
-    public final UserJWTDetails createUser(RegisterUserRequest request) throws UserAlreadyExistsException {
+    public final UserJwtDetails createUser(RegisterUserRequest request) throws UserAlreadyExistsException {
 
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) throw new UserAlreadyExistsException();
@@ -122,7 +124,7 @@ public class UserService {
         newUser.setPasswordHash(hash);
         userRepository.save(newUser);
 
-        return new UserJWTDetails(newUser);
+        return new UserJwtDetails(newUser);
     }
 
     /**

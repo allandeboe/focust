@@ -1,5 +1,5 @@
 /**
- * JWTAuthenticationFilter.java - Used to check if a request has a valid JWT token.
+ * JwtAuthenticationFilter.java - Used to check if a request has a valid JWT token.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 
@@ -27,7 +27,7 @@ package com.focust.api.security.jwt;
 
 // Focust //
 import com.focust.api.exceptions.UserNotFoundException;
-import com.focust.api.users.UserJWTDetails;
+import com.focust.api.users.UserJwtDetails;
 import com.focust.api.users.UserService;
 
 // Jakarta Servlets //
@@ -55,9 +55,9 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired private JWTService jwtService;
+    @Autowired private JwtService jwtService;
     @Autowired private UserService userService;
 
     @Override
@@ -83,7 +83,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String email = jwtService.getEmail(jwtToken.get()).orElseThrow(Exception::new);
-            UserJWTDetails jwtDetails = userService.getUserDetails(email);
+            UserJwtDetails jwtDetails = userService.getUserDetails(email);
         }
 
         // "NoSuchAlgorithmException" and "InvalidKeySpecException" are thrown as a

@@ -19,11 +19,11 @@
  * @see org.springframework.data.domain.Page
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.exceptions;
 
 ///////////////////////////////////////////////////////////////////////////
 
-public class EmptyPageException extends RuntimeException { }
+public final class EmptyPageException extends RuntimeException { }

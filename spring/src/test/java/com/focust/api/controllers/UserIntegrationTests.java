@@ -25,7 +25,7 @@
  * @see com.focust.api.controllers.UserController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.controllers;
@@ -80,12 +80,12 @@ class UserIntegrationTests {
     public final void givenAuthRegister_whenSendingRequest_thenCreatedStatus() {
         RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "password123");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().post("/auth/register");
 
         String responseBody = response.thenReturn().asString();
@@ -93,7 +93,10 @@ class UserIntegrationTests {
 
         response.then().assertThat()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("jwtToken", isA(String.class))
+                .cookie("jwt-refresh-token", isA(String.class))
+                .and()
+                .body("accessToken", isA(String.class))
+                .and()
                 .body("userId", isA(Integer.class));
     }
 
@@ -101,12 +104,12 @@ class UserIntegrationTests {
     public final void givenAuthRegister_whenSendingRequestAndUserExists_thenOkStatus() {
         RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().post("/auth/register");
 
         String responseBody = response.thenReturn().asString();
@@ -121,12 +124,12 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("user@focust.local", "password123");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
@@ -134,7 +137,10 @@ class UserIntegrationTests {
 
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("jwtToken", isA(String.class))
+                .cookie("jwt-refresh-token", isA(String.class))
+                .and()
+                .body("accessToken", isA(String.class))
+                .and()
                 .body("userId", isA(Integer.class));
 
     }
@@ -144,12 +150,12 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("user@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
@@ -165,12 +171,12 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("test@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
@@ -185,12 +191,12 @@ class UserIntegrationTests {
     public final void givenUsers_whenSendingRequestForUsers_thenOkStatus() {
 
         PageNumberRequest request = new PageNumberRequest();
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJSON() + "\"");
+        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body(request.getJSON())
+                .body(request.getJson())
                 .when().get("/users");
 
         String responseBody = response.thenReturn().asString();

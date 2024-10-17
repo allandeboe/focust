@@ -1,5 +1,5 @@
 /**
- * JWTService.java - Service that handles JWT Tokens
+ * JwtService.java - Service that handles JWT Tokens
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.3
  */
 package com.focust.api.security.jwt;
@@ -33,12 +33,11 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 // Focust //
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.focust.api.users.UserJWTDetails;
+import com.focust.api.users.UserJwtDetails;
 
 // Spring Framework //
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -62,10 +60,11 @@ import java.util.Optional;
 ///////////////////////////////////////////////////////////////////////////
 
 @Service
-public class JWTService {
+public class JwtService {
 
     private final static String issuer = "focust";
     private final static long accessTokenExpirationTime = 5 * 60;
+    private final static long refreshTokenExpirationTime = 7 * 24 * 60 * 60;
 
     @Autowired
     private Environment environment;
@@ -78,13 +77,29 @@ public class JWTService {
      * @return An Optional<String> object that contains either nothing or the newly token token
      * @throws NoSuchAlgorithmException or InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
-    public final Optional<String> generateAccessToken(UserJWTDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public final Optional<String> generateAccessToken(UserJwtDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
         try {
             Instant currentTime = Instant.now();
             return Optional.ofNullable(JWT.create()
-                    .withIssuer(JWTService.issuer)
+                    .withIssuer(JwtService.issuer)
                     .withClaim("email", userDetails.getEmail())
                     .withExpiresAt(Date.from(currentTime.plusSeconds(accessTokenExpirationTime)))
+                    .withIssuedAt(Date.from(currentTime))
+                    .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
+        }
+        catch (JWTCreationException | IOException e) {
+            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
+            return Optional.empty();
+        }
+    }
+
+    public final Optional<String> generateRefreshToken(UserJwtDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        try {
+            Instant currentTime = Instant.now();
+            return Optional.ofNullable(JWT.create()
+                    .withIssuer(JwtService.issuer)
+                    .withClaim("email", userDetails.getEmail())
+                    .withExpiresAt(Date.from(currentTime.plusSeconds(refreshTokenExpirationTime)))
                     .withIssuedAt(Date.from(currentTime))
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
@@ -114,7 +129,7 @@ public class JWTService {
 
     private DecodedJWT getValidatedToken(String jwtToken) throws IOException, JWTVerificationException, NoSuchAlgorithmException, InvalidKeySpecException {
         JWTVerifier verifier = JWT.require(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey()))
-                .withIssuer(JWTService.issuer)
+                .withIssuer(JwtService.issuer)
                 .build();
         return verifier.verify(jwtToken.replace("Bearer ", ""));
     }

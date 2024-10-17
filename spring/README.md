@@ -18,7 +18,7 @@ The Spring application uses *Java JDK 23*.
 | [**Testcontainers**](https://testcontainers.com/) | `1.19.8`[^1] | Used to create a lightweight MySQL database for testing purposes. |
 | **MySQL JDBC Driver** | `8.3.0`[^1] | Allows the server to interact with the MySQL database. |
 | [**JGit**](https://github.com/eclipse-jgit/jgit) | `7.0.0.202409031743-r` | Allows the application to interact with [git](https://git-scm.com/). |
-| [**JUnit**](https://junit.org/junit5/) | `4.13.2`[^2] | Used to create (unit) tests in Java. Includes [JUnit Jupiter]() |
+| [**JUnit 5**](https://junit.org/junit5/) | `4.13.2`[^2] | Used to create (unit) tests in Java. Includes [JUnit Jupiter]() |
 | [**Mockito**](https://site.mockito.org/) | `5.11.0`[^2] | Used to easily create mocks for testing. |
 | [**Auth0 Java-JWT**](https://github.com/auth0/java-jwt) | `4.4.0` | Used to create, sign, and verify JWT tokens. |
 | [**REST-Assured**](https://rest-assured.io/) | `5.5.0` | Used to interact with server endpoints when testing. |
