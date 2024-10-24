@@ -43,12 +43,20 @@ The first two credentials needed are **username & password** credentials with th
 * `focust-spring-security` - for Spring Security
 * `focust-mysql-database` - for MySQL Database
 
-The last credential needed is an **certificate** credential, where you upload an appropriate `PKCS12` *SSL Certificate*:
+The next credential needed is an **certificate** credential, where you upload an appropriate `PKCS12` *SSL Certificate*:
 
 * `focust-spring-ssl-certificate` - to enable HTTPS for the Spring Application; `focust-spring` and `focust-spring.p12` are the values for *alias* and the *keystore*, respectively.
 
-> [!IMPORTANT]
-> changing the alias and keystore of the SSL Certificate should be reflected in the `./spring/src/main/resources/application.properties` file with the properties `server.ssl.key-store-alias` and `server.ssl.key-store`, respectively. Note that the `server.ssl.key-store` property needs to accept a value of `classpath:/keystore/[KEYSTORE]`, where `[KEYSTORE]` is the keystore value.
+The final 4 credentials needed are **Secret File** credentials, where you upload both the generated `.crt` and `.key` files of the `focust-spring.p12` (i.e. `focust-spring-client.crt` and `focust-spring-client.key`) and the RSA public and private key files (i.e. `public_key.der` and `private_key.der`) used to sign and verify JWT tokens.
+
+* `focust-spring-client-crt` - the `focust-spring-client.crt` file.
+* `focust-spring-client-key` - the `focust-spring-client.key` file.
+* `focust-jwt-rsa-public-key` - the `public_key.der` file.
+* `focust-jwt-rsa-private-key` - the `private_key.der` file.
+
+In the end, you should have the following 7 credentials under *Manage Jenkins* > *Credentials*:
+
+![A Screenshot of the 7 credentials needed for the Focust application as it appears under *Manage Jenkins* > *Credentials*.](../images/jenkins-credentials.png)
 
 To create Credentials in Jenkins, please refer to [this page](https://www.jenkins.io/doc/book/using/using-credentials/) on the Jenkins website.
 
@@ -62,7 +70,7 @@ On the Jenkins Dashboard, there should be an option to create a new job. Press t
 After pressing "OK", you will be met with the second page. Scroll all the way down to the bottom where you should see **Pipeline**. Now, select "Pipeline script from SCM" for Definition, select "Git" for the SCM, and, under **Repositories**, finally put in the link to the GitHub of the project (or your fork of it) for the "Repository URL".
 
 > [!IMPORTANT]
-> if you have a private fork of the project, you should add a new username and password credential for GitHub and use this credential for the "Credentials" part under the **Repositories** subsection.
+> if you have a private fork of the project, you will need to replace the repository url to `https://[ACCESS_TOKEN]@github.com/[USERNAME]/[FORKED_REPO]`, where `[ACCESS_TOKEN]` is the Fine-grained Personal Access Token that you will get from GitHub when creating a new token under [*Settings*](https://github.com/settings/profile) > *Developer Settings* > *Personal Access Tokens* > *Fine-grained Tokens* on GitHub.
 
 It should look something like this:
 
