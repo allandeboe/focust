@@ -62,11 +62,13 @@ pipeline {
                                        passwordVariable: 'SSL_CERTIFICATE_PSW')]) {
                     dir ('./spring/src/main/resources') {
                         sh 'mkdir .keystore'
-                        sh 'cp $SSL_CERTIFICATE_PATH ./keystore/focust-spring.p12'
-                        sh 'cp $FOCUST_SPRING_CLIENT_CRT ./keystore/focust-spring-client.crt'
-                        sh 'cp $FOCUST_SPRING_CLIENT_KEY ./keystore/focust-spring-client.key'
-                        sh 'cp $JWT_RSA_PUBLIC_KEY ./keystore/public_key.der'
-                        sh 'cp $JWT_RSA_PRIVATE_KEY ./keystore/private_key.der'
+                        dir ('./.keystore') {
+                            sh 'cp $SSL_CERTIFICATE_PATH ./focust-spring.p12'
+                            sh 'cp $FOCUST_SPRING_CLIENT_CRT ./focust-spring-client.crt'
+                            sh 'cp $FOCUST_SPRING_CLIENT_KEY ./focust-spring-client.key'
+                            sh 'cp $JWT_RSA_PUBLIC_KEY ./public_key.der'
+                            sh 'cp $JWT_RSA_PRIVATE_KEY ./private_key.der'
+                        }
                     }
                     sh 'mkdir .secrets'
                     dir ('./.secrets') {
