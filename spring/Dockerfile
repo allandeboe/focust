@@ -40,3 +40,4 @@ RUN cp -a ./src/main/resources/. ./src/test/resources
 # daemon while the image is being built.
 RUN chmod -x ./run.sh
 ENTRYPOINT ["/bin/bash", "./run.sh"]
+CMD ["-d"]
