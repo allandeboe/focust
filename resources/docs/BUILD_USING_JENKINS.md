@@ -70,7 +70,7 @@ On the Jenkins Dashboard, there should be an option to create a new job. Press t
 After pressing "OK", you will be met with the second page. Scroll all the way down to the bottom where you should see **Pipeline**. Now, select "Pipeline script from SCM" for Definition, select "Git" for the SCM, and, under **Repositories**, finally put in the link to the GitHub of the project (or your fork of it) for the "Repository URL".
 
 > [!IMPORTANT]
-> if you have a private fork of the project, you will need to replace the repository url to `https://[ACCESS_TOKEN]@github.com/[USERNAME]/[FORKED_REPO]`, where `[ACCESS_TOKEN]` is the Fine-grained Personal Access Token that you will get from GitHub when creating a new token under [*Settings*](https://github.com/settings/profile) > *Developer Settings* > *Personal Access Tokens* > *Fine-grained Tokens* on GitHub.
+> if you have a private fork of the project, you will need to replace the repository url to `https://[ACCESS_TOKEN]@github.com/[USERNAME]/[FORKED_REPO].git`, where `[ACCESS_TOKEN]` is the Fine-grained Personal Access Token that you will get from GitHub when creating a new token under [*Settings*](https://github.com/settings/profile) > *Developer Settings* > *Personal Access Tokens* > *Fine-grained Tokens* on GitHub.
 
 It should look something like this:
 
