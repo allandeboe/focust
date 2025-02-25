@@ -24,7 +24,7 @@
  * @see com.focust.api.controllers.AuthenticationController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5
  * @since 0.0.3
  */
 package com.focust.api.dto.responses;
@@ -38,11 +38,12 @@ import lombok.RequiredArgsConstructor;
 
 ///////////////////////////////////////////////////////////////////////////
 
+@Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
 public final class JwtTokenResponse {
 
-    @Getter private final String accessToken;
-    @Getter private long userId;
+    private final String accessToken;
+    private long userId;
 
 }

@@ -86,13 +86,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- JGit -->
-		<dependency>
-    		<groupId>org.eclipse.jgit</groupId>
-    		<artifactId>org.eclipse.jgit</artifactId>
-    		<version>7.0.0.202409031743-r</version>
-		</dependency>
-
 		<!-- Auth0 Java JWT -->
 		<dependency>
  			<groupId>com.auth0</groupId>

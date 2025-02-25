@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5
  * @since 0.0.3
  */
 package com.focust.api.security.jwt;
@@ -112,7 +112,8 @@ public class JwtService {
     /**
      * @param jwtToken a String representing the JWT token.
      * @return an Optional<String> representing the email
-     * @throws NoSuchAlgorithmException or InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws NoSuchAlgorithmException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
     public final Optional<String> getEmail(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if (jwtToken.isEmpty()) return Optional.empty();
@@ -122,6 +123,22 @@ public class JwtService {
         }
         catch (JWTVerificationException | IOException e) {
             return Optional.empty();
+        }
+    }
+
+    /**
+     * @param jwtToken a String representing the JWT token.
+     * @return true if the token is valid, and false if it is invalid or has expired.
+     * @throws NoSuchAlgorithmException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
+     */
+    public final boolean validateToken(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        try {
+            DecodedJWT token = getValidatedToken(jwtToken);
+            return true;
+        }
+        catch (JWTVerificationException | IOException e) {
+            return false;
         }
     }
 

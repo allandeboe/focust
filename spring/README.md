@@ -1,8 +1,8 @@
 # Focust - Spring Application
-This Spring application is used as the RESTful, back-end server for Focust.
+This Spring application is used as the RESTful, back-end server for Focust, responsible for storing relevant data, like user data, task data, and so on.
 
 ## About
-I intended this application to be used in a way that is analogous to how [*Jenkins*](https://www.jenkins.io/) is used in the sense that Focust acts as a stand-alone application running on some allocated company servers and can be accessed by the team working at said company. This influences a lot of design decisions regarding the application.
+I intended this application to be used in a way that is analogous to how [*Jenkins*](https://www.jenkins.io/) is used in the sense that Focust acts as a stand-alone application running on some allocated company servers and can be accessed by the team working at said company. This influences a lot of design decisions regarding the application, including making the web app have a monolithic architecture and thus not use microservices.
 
 ## Dependencies
 The Spring application uses *Java JDK 23*.
@@ -17,8 +17,7 @@ The Spring application uses *Java JDK 23*.
 | [**Lombok**](https://projectlombok.org/) | `1.18.34`[^1] | Reduces common boilerplate code. |
 | [**Testcontainers**](https://testcontainers.com/) | `1.19.8`[^1] | Used to create a lightweight MySQL database for testing purposes. |
 | **MySQL JDBC Driver** | `8.3.0`[^1] | Allows the server to interact with the MySQL database. |
-| [**JGit**](https://github.com/eclipse-jgit/jgit) | `7.0.0.202409031743-r` | Allows the application to interact with [git](https://git-scm.com/). |
-| [**JUnit 5**](https://junit.org/junit5/) | `4.13.2`[^2] | Used to create (unit) tests in Java. Includes [JUnit Jupiter]() |
+| [**JUnit 5**](https://junit.org/junit5/) | `4.13.2`[^2] | Used to create (unit) tests in Java. Includes *JUnit Jupiter* |
 | [**Mockito**](https://site.mockito.org/) | `5.11.0`[^2] | Used to easily create mocks for testing. |
 | [**Auth0 Java-JWT**](https://github.com/auth0/java-jwt) | `4.4.0` | Used to create, sign, and verify JWT tokens. |
 | [**REST-Assured**](https://rest-assured.io/) | `5.5.0` | Used to interact with server endpoints when testing. |
@@ -35,7 +34,7 @@ Focust is an issue tracker web application, and, to assign people with tasks fro
 
 * Use data transfer objects (DTOs) to prevent leaking sensitive information to the outside when someone makes a request and causes a data breach. After all, we don't want to repeat what [happened in Missouri](https://arstechnica.com/tech-policy/2021/10/viewing-website-html-code-is-not-illegal-or-hacking-prof-tells-missouri-gov/), do we?
 
-* JWT Access and Refresh Tokens are signed and verified using the [RSA256](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) algorithm, as using an assymetric key algorithm is more secure than a symmetric one by the mere fact that the same secret to decrypt 
+* JWT Access and Refresh Tokens are signed and verified using the [RSA256](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) algorithm, as using an assymetric key algorithm is more secure than a symmetric one by the mere fact that the key used to *encrypt* a message isn't the same as the key used to *decrypt* a message, and the outside world only knows of the *encryption* (public) key and not the *decryption* (private) key.
 
 ## Overview of REST
 This section contains a comprehensive overview of the REST commands one can make to the back-end server to be able to interact with it with the need for the front-end server. For all commands, the requests to and responses from the server are all in JSON.
@@ -45,7 +44,8 @@ When it comes to authentication, there are primarily only two endpoints that are
 
 | HTTP Method | Endpoint | Description
 | --- |--- |--- |
-| `POST` | `/auth/register` | Registers a new user, given `email` and `password`. Responds with `jwtToken` containing the JWT Access Token. |
-| `POST` | `/auth/login` | Used to sign in a user, given `email` and `password`. Responds with `jwtToken` containing the JWT Access Token. |
+| `POST` | `/auth/register` | Registers a new user, given `email` and `password`. Responds with `accessToken` containing the JWT Access Token. |
+| `POST` | `/auth/login` | Used to sign in a user, given `email` and `password`. Responds with `accessToken` containing the JWT Access Token. |
+| `POST` | `/auth/refresh` | Used to generate a new access token (i.e. `accessToken`) after an old access token has expired, given a refresh token. |
 | `GET` | `/users` | Used to get the list of all users, 15 at a time, with each entry showing the *id* and *email* of a given user. you can specify a page number by setting the `pageNumber` value in the JSON Request. By Default, the first 15 users are returned. |
 | `GET` | `/users/{id}` | Used to get the user with the user id of `{id}`. Returns the id and email of the user.
