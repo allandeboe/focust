@@ -63,17 +63,29 @@ pipeline {
                     dir ('./spring/src/main/resources') {
                         sh 'test -d .keystore || mkdir .keystore'
                         dir ('./.keystore') {
+                            sh 'test -f ./focust-spring.p12 && rm ./focust-spring.p12'
                             sh 'cp $SSL_CERTIFICATE_PATH ./focust-spring.p12'
+
+                            sh 'test -f ./focust-spring-client.crt && rm ./focust-spring-client.crt'
                             sh 'cp $FOCUST_SPRING_CLIENT_CRT ./focust-spring-client.crt'
+                            sh 'test -f ./focust-spring-client.key && rm ./focust-spring-client.key'
                             sh 'cp $FOCUST_SPRING_CLIENT_KEY ./focust-spring-client.key'
+
+                            sh 'test -f ./public_key.der && rm ./public_key.der'
                             sh 'cp $JWT_RSA_PUBLIC_KEY ./public_key.der'
+                            sh 'test -f ./private_key.der && rm ./private_key.der'
                             sh 'cp $JWT_RSA_PRIVATE_KEY ./private_key.der'
                         }
                     }
                     sh 'test -d .secrets || mkdir .secrets'
                     dir ('./.secrets') {
+                        sh 'test -f mysql-root && rm mysql-root'
                         sh 'echo "$MYSQL_DATABASE_CREDENTIALS_PSW" >> mysql-root'
+
+                        sh 'test -f spring-security && rm spring-security'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
+                        
+                        sh 'test -f ssl-keystore && rm ssl-keystore'
                         sh 'echo "$SSL_CERTIFICATE_PSW" >> ssl-keystore'
                     }
                 }
