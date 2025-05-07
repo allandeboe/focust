@@ -39,5 +39,7 @@ RUN cp -a ./src/main/resources/. ./src/test/resources
 # Testcontainers when testing, and it can't access the docker
 # daemon while the image is being built.
 RUN chmod -x ./run.sh
+
+HEALTHCHECK CMD curl --fail --silent https://localhost:8443/actuator/health | grep UP || exit 1
 ENTRYPOINT ["/bin/bash", "./run.sh"]
 CMD ["-d"]

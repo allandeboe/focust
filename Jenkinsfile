@@ -61,7 +61,7 @@ pipeline {
                                        keystoreVariable: 'SSL_CERTIFICATE_PATH', \
                                        passwordVariable: 'SSL_CERTIFICATE_PSW')]) {
                     dir ('./spring/src/main/resources') {
-                        sh 'mkdir .keystore'
+                        sh 'test -d .keystore || mkdir .keystore'
                         dir ('./.keystore') {
                             sh 'cp $SSL_CERTIFICATE_PATH ./focust-spring.p12'
                             sh 'cp $FOCUST_SPRING_CLIENT_CRT ./focust-spring-client.crt'
@@ -70,7 +70,7 @@ pipeline {
                             sh 'cp $JWT_RSA_PRIVATE_KEY ./private_key.der'
                         }
                     }
-                    sh 'mkdir .secrets'
+                    sh 'test -d .secrets || mkdir .secrets'
                     dir ('./.secrets') {
                         sh 'echo "$MYSQL_DATABASE_CREDENTIALS_PSW" >> mysql-root'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
