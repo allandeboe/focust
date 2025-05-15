@@ -208,7 +208,6 @@ class UserEndpointTests {
     }
 
     /**
-     *
      * see UserEndpointTests.givenAuthRegister_whenSendingRequest_thenCreatedStatus
      */
     @Test @Order(7)

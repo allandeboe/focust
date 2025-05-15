@@ -95,7 +95,7 @@ pipeline {
                         --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
                         --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
                         --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/ssl-keystore" \
-                        . -t allandeboe/focust-spring:0.0.4
+                        . -t allandeboe/focust-spring:0.0.5
                     '''
                     sh '''
                         docker run -d --name focust-spring \
@@ -104,7 +104,7 @@ pipeline {
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
                         -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal \
                         -p 8443:8443 \
-                        allandeboe/focust-spring:0.0.4
+                        allandeboe/focust-spring:0.0.5
                     '''
                 }
             }   

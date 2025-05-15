@@ -69,10 +69,6 @@ public final class FocustMySQLContainer extends MySQLContainer<FocustMySQLContai
                             "MYSQL_USER=" + databaseContainer.getUsername(),
                             "MYSQL_PASSWORD=" + databaseContainer.getPassword()
                     ));
-
-            databaseContainer.setWaitStrategy(Wait.defaultWaitStrategy().withStartupTimeout(Duration.of(60, SECONDS)));
-
-
         }
         return databaseContainer;
     }
