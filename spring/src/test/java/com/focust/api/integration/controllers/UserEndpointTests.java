@@ -50,7 +50,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.TestInstance;
 
 // Spring Framework //
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,7 +213,7 @@ class UserEndpointTests {
     @Test @Order(7)
     public final void givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus() {
 
-        RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "password123");
+        RegisterUserRequest request = new RegisterUserRequest("cookie-crumbl@focust.local", "password123");
         System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\" (Creating User for Cookie)");
         Response create_user_response = RestAssured.given()
                 .accept(ContentType.JSON)
