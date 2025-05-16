@@ -71,15 +71,12 @@ import static org.hamcrest.Matchers.isA;
 @UseFocustMySQL
 @DirtiesContext
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserEndpointTests {
 
     // These data members are needed for @UseFocustRestAssured
     @LocalServerPort protected int serverPort;
     @Autowired protected ResourceLoader loader;
     @Autowired protected Environment environment;
-
-    private Cookies cookies;
 
     @Test @Order(1)
     public final void givenAuthRegister_whenSendingRequest_thenCreatedStatus() {
@@ -96,9 +93,7 @@ class UserEndpointTests {
         String responseBody = response.thenReturn().asString();
         System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
-        // see givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus
-        // for when the value "cookies" is used.
-        cookies = response.detailedCookies();
+        Cookies cookies = response.detailedCookies();
         System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
 
         response.then().assertThat()
@@ -219,8 +214,16 @@ class UserEndpointTests {
     @Test @Order(7)
     public final void givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus() {
 
-        // see givenAuthRegister_whenSendingRequest_thenCreatedStatus
-        // for when the value "cookies" is set.
+        RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "password123");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\" (Creating User for Cookie)");
+        Response create_user_response = RestAssured.given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(request.getJson())
+                .when().post("/auth/register");
+        Cookies cookies = create_user_response.detailedCookies();
+
+        System.out.println("(UserEndpointTests) - Sending Access Token Refresh Request.");
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
