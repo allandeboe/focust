@@ -29,7 +29,7 @@ RUN update-ca-certificates
 
 WORKDIR /usr/src/focust-spring
 
-RUN mkdir ./src/test/resources
+RUN test -d ./src/test/resources || mkdir ./src/test/resources
 RUN cp -a ./src/main/resources/. ./src/test/resources
 
 ####################################################################################################
