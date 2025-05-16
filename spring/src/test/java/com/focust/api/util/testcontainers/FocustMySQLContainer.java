@@ -59,6 +59,7 @@ public final class FocustMySQLContainer extends MySQLContainer<FocustMySQLContai
                     .withDatabaseName(MYSQL_DATABASE)
                     .withNetworkMode(MYSQL_NETWORK_MODE)
                     .withEnv("MYSQL_DATABASE", MYSQL_DATABASE)
+                    .withConfigurationOverride("mysql/conf.d")
                     .withExposedPorts(3306);
 
             // I do not want to add any sensitive information into the codebase itself,
