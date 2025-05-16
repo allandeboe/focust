@@ -14,12 +14,15 @@ docker run -d --name focust-mysql \
     -e MYSQL_DATABASE=focust_db \
     -e MYSQL_ROOT_PASSWORD=[PASSWORD] \
     --network spring-mysql \
-    --volume=/root/docker/focust-mysql/conf.d:/etc/mysql/conf.d \
+    --volume=./mysql/conf.d:/etc/mysql/conf.d \
     --volume=mysql-data:/var/lib/mysql \
     --restart=always \
     -p 3307:3306 \
     mysql:latest
 ```
+
+> [!NOTE]
+> `./mysql.conf.d` is used instead of `/root/docker/focust-mysql/conf.d` is due to issues regarding variables removed in `mysql:9.3.0` (which is the `latest` as of 5/15/2025), like `innodb_log_file_size`. 
 
 ### SSL Certificate
 First, we need to a SSL certificate with `focust-spring` and `focust-spring.p12` being the *alias* and *keystore* respectively. You can do this by creating a **Self-Signed SSL Certificate**. If you want more information on how to create a Self-Signed SSL Certificate, I recommend the page ["How to Enable HTTPS in Spring Boot Application?"](https://www.geeksforgeeks.org/how-to-enable-https-in-spring-boot-application/) by *GeeksForGeeks*.

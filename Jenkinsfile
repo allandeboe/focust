@@ -34,7 +34,7 @@ pipeline {
                     -e MYSQL_DATABASE=focust_db \
                     -e MYSQL_ROOT_PASSWORD=$MYSQL_DATABASE_CREDENTIALS_PSW \
                     --network ${BACK_END_DATABASE_NETWORK_NAME} \
-                    --volume=/root/docker/focust-mysql/conf.d:/etc/mysql/conf.d \
+                    --volume=./mysql/conf.d:/etc/mysql/conf.d \
                     --volume=${DATABASE_VOLUME_NAME}:/var/lib/mysql \
                     --restart=always \
                     -p 3307:3306 \
