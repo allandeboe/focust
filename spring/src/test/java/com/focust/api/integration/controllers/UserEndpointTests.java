@@ -222,13 +222,14 @@ class UserEndpointTests {
                 .body(request.getJson())
                 .when().post("/auth/register");
         Cookies cookies = create_user_response.detailedCookies();
+        System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
 
         System.out.println("(UserEndpointTests) - Sending Access Token Refresh Request.");
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .body("{}")
                 .cookies(cookies)
+                .body("{}")
                 .when().get("/auth/refresh");
 
         String responseBody = response.thenReturn().asString();

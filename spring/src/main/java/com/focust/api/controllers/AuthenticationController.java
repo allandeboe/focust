@@ -42,6 +42,7 @@ import com.focust.api.users.UserService;
 
 // Spring Framework //
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,13 +52,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.util.WebUtils;
 
 // Standard Java //
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -168,11 +170,16 @@ public class AuthenticationController {
     }
 
     /**
-     * @param refreshToken String value of the "jwt-refresh-token" cookie.
+     * @param request a HttpServletRequest containing the 'jwt-refresh-token' cookie
      * @return an HTTP Response, with a new JWT Access Token generated if everything goes well.
      */
     @GetMapping(value="/refresh", produces="application/json")
-    public final ResponseEntity<Object> refreshAccessToken(@CookieValue(value = "jwt-refresh-token", defaultValue = "") String refreshToken) {
+    public final ResponseEntity<Object> refreshAccessToken(HttpServletRequest request) {
+
+        Optional<String> refreshToken = Optional.ofNullable(
+                Objects.requireNonNull(WebUtils.getCookie(request, "jwt-refresh-token"))
+                        .getValue()
+        );
 
         // Ensures the messages are consistent.
         final String BAD_REQUEST_RESPONSE = "Can't provide new access token without a valid refresh token!";
@@ -185,13 +192,13 @@ public class AuthenticationController {
         }
 
         try {
-            if (!jwtService.validateToken(refreshToken)) {
+            if (!jwtService.validateToken(refreshToken.get())) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", BAD_REQUEST_RESPONSE);
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
-            Optional<String> email = jwtService.getEmail(refreshToken);
+            Optional<String> email = jwtService.getEmail(refreshToken.get());
             if (email.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", BAD_REQUEST_RESPONSE);
