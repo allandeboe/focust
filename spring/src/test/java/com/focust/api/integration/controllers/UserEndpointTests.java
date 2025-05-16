@@ -77,6 +77,8 @@ class UserEndpointTests {
     @Autowired protected ResourceLoader loader;
     @Autowired protected Environment environment;
 
+    private Cookies cookies;
+
     @Test @Order(1)
     public final void givenAuthRegister_whenSendingRequest_thenCreatedStatus() {
         RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "password123");
@@ -91,6 +93,11 @@ class UserEndpointTests {
 
         String responseBody = response.thenReturn().asString();
         System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
+
+        // see givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus
+        // for when the value "cookies" is used.
+        cookies = response.detailedCookies();
+        System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
 
         response.then().assertThat()
                 .statusCode(HttpStatus.CREATED.value())
@@ -207,16 +214,16 @@ class UserEndpointTests {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    /**
-     * see UserEndpointTests.givenAuthRegister_whenSendingRequest_thenCreatedStatus
-     */
     @Test @Order(7)
     public final void givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus() {
 
+        // see givenAuthRegister_whenSendingRequest_thenCreatedStatus
+        // for when the value "cookies" is set.
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body("{}")
+                .cookies(cookies)
                 .when().get("/auth/refresh");
 
         String responseBody = response.thenReturn().asString();

@@ -32,13 +32,9 @@ package com.focust.api.util.testcontainers;
 
 // Testcontainers //
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 // Standard Java //
-import java.time.Duration;
 import java.util.List;
-
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 ///////////////////////////////////////////////////////////////////////////
 
