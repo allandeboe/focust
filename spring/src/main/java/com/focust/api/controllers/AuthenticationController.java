@@ -176,30 +176,29 @@ public class AuthenticationController {
     @GetMapping(value="/refresh", produces="application/json")
     public final ResponseEntity<Object> refreshAccessToken(HttpServletRequest request, HttpServletResponse servletResponse) {
 
-        Optional<String> refreshToken = Optional.ofNullable(
-                Objects.requireNonNull(WebUtils.getCookie(request, "jwt-refresh-token"))
-                        .getValue()
-        );
-
         // Ensures the messages are consistent.
         final String BAD_REQUEST_RESPONSE = "Can't provide new access token without a valid refresh token!";
         final String INTERNAL_SERVER_ERROR_RESPONSE = "Something went horribly wrong when generating a new access token!";
         final String UNAUTHORIZED_RESPONSE = "Can't generate access token for unauthorized users";
 
-        if (refreshToken.isEmpty()) {
+        Optional<Cookie> jwtRefreshTokenCookie = Optional.ofNullable(WebUtils.getCookie(request, "jwt-refresh-token"));
+        if (jwtRefreshTokenCookie.isEmpty()) {
             Map<String, String> response = new HashMap<>();
             response.put("message", BAD_REQUEST_RESPONSE);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+        String refreshToken = jwtRefreshTokenCookie.get().getValue();
+        System.out.println("(AuthenticationController - refreshAccessToken) REFRESH_TOKEN: \n\"" + refreshToken + "\"");
+
         try {
-            if (!jwtService.validateToken(refreshToken.get())) {
+            if (!jwtService.validateToken(refreshToken)) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", BAD_REQUEST_RESPONSE);
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
-            Optional<String> email = jwtService.getEmail(refreshToken.get());
+            Optional<String> email = jwtService.getEmail(refreshToken);
             if (email.isEmpty()) {
                 Map<String, String> response = new HashMap<>();
                 response.put("message", BAD_REQUEST_RESPONSE);
