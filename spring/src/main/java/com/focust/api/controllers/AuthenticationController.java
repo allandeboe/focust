@@ -174,7 +174,7 @@ public class AuthenticationController {
      * @return an HTTP Response, with a new JWT Access Token generated if everything goes well.
      */
     @GetMapping(value="/refresh", produces="application/json")
-    public final ResponseEntity<Object> refreshAccessToken(HttpServletRequest request) {
+    public final ResponseEntity<Object> refreshAccessToken(HttpServletRequest request, HttpServletResponse servletResponse) {
 
         Optional<String> refreshToken = Optional.ofNullable(
                 Objects.requireNonNull(WebUtils.getCookie(request, "jwt-refresh-token"))
@@ -243,7 +243,7 @@ public class AuthenticationController {
     // Created to ensure consistency when generating the Refresh Token Cookie
     private Cookie createRefreshTokenCookie(String refreshToken) {
         Cookie refreshTokenCookie = new Cookie ("jwt-refresh-token", refreshToken);
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
+        refreshTokenCookie.setMaxAge((int)JwtService.refreshTokenExpirationTime);
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");

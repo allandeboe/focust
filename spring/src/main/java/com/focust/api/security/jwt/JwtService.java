@@ -64,7 +64,7 @@ public class JwtService {
 
     private final static String issuer = "focust";
     private final static long accessTokenExpirationTime = 5 * 60;
-    private final static long refreshTokenExpirationTime = 7 * 24 * 60 * 60;
+    public final static long refreshTokenExpirationTime = 7 * 24 * 60 * 60;
 
     @Autowired
     private Environment environment;
@@ -88,7 +88,7 @@ public class JwtService {
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
         catch (JWTCreationException | IOException e) {
-            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
+            System.out.println("(JwtService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
@@ -104,7 +104,7 @@ public class JwtService {
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
         catch (JWTCreationException | IOException e) {
-            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
+            System.out.println("(JwtService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
@@ -116,13 +116,16 @@ public class JwtService {
      * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
     public final Optional<String> getEmail(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if (jwtToken.isEmpty()) return Optional.empty();
+        if (jwtToken.isEmpty()) {
+            System.out.println("(JwtService - getEmail) Received JWT Token is empty: \"" + jwtToken + "\"");
+            return Optional.empty();
+        }
         try {
             DecodedJWT validatedToken = this.getValidatedToken(jwtToken);
             return Optional.ofNullable(validatedToken.getClaim("email").toString());
         }
         catch (JWTVerificationException | IOException e) {
-            System.out.println("(JWTService - getEmail) ERROR: \"" + e.getMessage() + "\"");
+            System.out.println("(JwtService - getEmail) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
