@@ -32,6 +32,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 // Focust //
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.focust.api.users.UserJwtDetails;
 
@@ -122,7 +123,12 @@ public class JwtService {
         }
         try {
             DecodedJWT validatedToken = this.getValidatedToken(jwtToken);
-            return Optional.ofNullable(validatedToken.getClaim("email").toString());
+            Optional<Claim> emailClaim = Optional.ofNullable(validatedToken.getClaim("email"));
+            if (emailClaim.isEmpty()) {
+                System.out.println("(JwtService - getEmail) Unable to get email from token.");
+                return Optional.empty();
+            }
+            return emailClaim.map(Claim::asString);
         }
         catch (JWTVerificationException | IOException e) {
             System.out.println("(JwtService - getEmail) ERROR: \"" + e.getMessage() + "\"");
