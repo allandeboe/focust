@@ -213,13 +213,13 @@ class UserEndpointTests {
     @Test @Order(7)
     public final void givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus() {
 
-        RegisterUserRequest request = new RegisterUserRequest("cookie-crumbl@focust.local", "password123");
-        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\" (Creating User for Cookie)");
+        SignInUserRequest request = new SignInUserRequest("user@focust.local", "password123");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\" (Signed In User for Cookie)");
         Response create_user_response = RestAssured.given()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(request.getJson())
-                .when().post("/auth/register");
+                .when().post("/auth/login");
         String userResponseBody = create_user_response.thenReturn().asString();
         System.out.println("(UserEndpointTests) - Received:\n\"" + userResponseBody + "\"");
 
