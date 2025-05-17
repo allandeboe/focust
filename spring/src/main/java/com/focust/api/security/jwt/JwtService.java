@@ -117,10 +117,7 @@ public class JwtService {
      * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
     public final Optional<String> getEmail(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if (jwtToken.isEmpty()) {
-            System.out.println("(JwtService - getEmail) Received JWT Token is empty: \"" + jwtToken + "\"");
-            return Optional.empty();
-        }
+        if (jwtToken.isEmpty()) return Optional.empty();
         try {
             DecodedJWT validatedToken = this.getValidatedToken(jwtToken);
             Optional<Claim> emailClaim = Optional.ofNullable(validatedToken.getClaim("email"));
