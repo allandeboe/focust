@@ -122,6 +122,7 @@ public class JwtService {
             return Optional.ofNullable(validatedToken.getClaim("email").toString());
         }
         catch (JWTVerificationException | IOException e) {
+            System.out.println("(JWTService - getEmail) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }

@@ -184,6 +184,7 @@ public class AuthenticationController {
         // Ensures the messages are consistent.
         final String BAD_REQUEST_RESPONSE = "Can't provide new access token without a valid refresh token!";
         final String INTERNAL_SERVER_ERROR_RESPONSE = "Something went horribly wrong when generating a new access token!";
+        final String UNAUTHORIZED_RESPONSE = "Can't generate access token for unauthorized users";
 
         if (refreshToken.isEmpty()) {
             Map<String, String> response = new HashMap<>();
@@ -214,6 +215,13 @@ public class AuthenticationController {
             }
 
             return new ResponseEntity<>(new JwtTokenResponse(accessToken.get(), userDetails.getId()), HttpStatus.OK);
+        }
+
+        // Because one can ask to refresh a token of a non-existent user
+        catch (UserNotFoundException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", UNAUTHORIZED_RESPONSE);
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // "NoSuchAlgorithmException" and "InvalidKeySpecException" are thrown as a
