@@ -220,6 +220,9 @@ class UserEndpointTests {
                 .contentType(ContentType.JSON)
                 .body(request.getJson())
                 .when().post("/auth/register");
+        String userResponseBody = create_user_response.thenReturn().asString();
+        System.out.println("(UserEndpointTests) - Received:\n\"" + userResponseBody + "\"");
+
         Cookies cookies = create_user_response.detailedCookies();
         System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
 
