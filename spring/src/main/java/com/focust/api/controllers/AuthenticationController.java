@@ -191,6 +191,9 @@ public class AuthenticationController {
         String refreshToken = jwtRefreshTokenCookie.get().getValue();
         System.out.println("(AuthenticationController - refreshAccessToken) REFRESH_TOKEN: \n\"" + refreshToken + "\"");
 
+        // ensures that the refresh token cookie is still found in the response.
+        servletResponse.addCookie(jwtRefreshTokenCookie.get());
+
         try {
             if (!jwtService.validateToken(refreshToken)) {
                 Map<String, String> response = new HashMap<>();
