@@ -25,7 +25,7 @@
  * @version 0.0.3
  * @since 0.0.3
  */
-package com.focust.api.security;
+package com.focust.api.unit.security;
 
 ///////////////////////////////////////////////////////////////////////////
 

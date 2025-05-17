@@ -17,7 +17,7 @@
  * ------------------------------------------------------------------------
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5
  * @since 0.0.3
  */
 package com.focust.api.security.jwt;
@@ -32,6 +32,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 // Focust //
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.focust.api.users.UserJwtDetails;
 
@@ -64,7 +65,7 @@ public class JwtService {
 
     private final static String issuer = "focust";
     private final static long accessTokenExpirationTime = 5 * 60;
-    private final static long refreshTokenExpirationTime = 7 * 24 * 60 * 60;
+    public final static long refreshTokenExpirationTime = 7 * 24 * 60 * 60;
 
     @Autowired
     private Environment environment;
@@ -88,7 +89,7 @@ public class JwtService {
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
         catch (JWTCreationException | IOException e) {
-            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
+            System.out.println("(JwtService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
@@ -104,7 +105,7 @@ public class JwtService {
                     .sign(Algorithm.RSA256(this.getPublicKey(), this.getPrivateKey())));
         }
         catch (JWTCreationException | IOException e) {
-            System.out.println("(JWTService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
+            System.out.println("(JwtService - generateAccessToken) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
         }
     }
@@ -112,16 +113,39 @@ public class JwtService {
     /**
      * @param jwtToken a String representing the JWT token.
      * @return an Optional<String> representing the email
-     * @throws NoSuchAlgorithmException or InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws NoSuchAlgorithmException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
      */
     public final Optional<String> getEmail(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
         if (jwtToken.isEmpty()) return Optional.empty();
         try {
             DecodedJWT validatedToken = this.getValidatedToken(jwtToken);
-            return Optional.ofNullable(validatedToken.getClaim("email").toString());
+            Optional<Claim> emailClaim = Optional.ofNullable(validatedToken.getClaim("email"));
+            if (emailClaim.isEmpty()) {
+                System.out.println("(JwtService - getEmail) Unable to get email from token.");
+                return Optional.empty();
+            }
+            return emailClaim.map(Claim::asString);
         }
         catch (JWTVerificationException | IOException e) {
+            System.out.println("(JwtService - getEmail) ERROR: \"" + e.getMessage() + "\"");
             return Optional.empty();
+        }
+    }
+
+    /**
+     * @param jwtToken a String representing the JWT token.
+     * @return true if the token is valid, and false if it is invalid or has expired.
+     * @throws NoSuchAlgorithmException if JWTService incorrectly extracts the Public and/or Private Keys.
+     * @throws InvalidKeySpecException if JWTService incorrectly extracts the Public and/or Private Keys.
+     */
+    public final boolean validateToken(String jwtToken) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        try {
+            DecodedJWT token = getValidatedToken(jwtToken);
+            return true;
+        }
+        catch (JWTVerificationException | IOException e) {
+            return false;
         }
     }
 

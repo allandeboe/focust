@@ -84,6 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String email = jwtService.getEmail(jwtToken.get()).orElseThrow(Exception::new);
             UserJwtDetails jwtDetails = userService.getUserDetails(email);
+            System.out.println("(JwtAuthenticationFilter - doFilterInternal) USER_ID: " + jwtDetails.getId() + ", USER_EMAIL: \"" + jwtDetails.getEmail() + "\"");
         }
 
         // "NoSuchAlgorithmException" and "InvalidKeySpecException" are thrown as a

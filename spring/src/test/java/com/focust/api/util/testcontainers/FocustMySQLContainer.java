@@ -23,7 +23,7 @@
  * @see com.focust.api.util.testcontainers.UseFocustMySQL
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.3
+ * @version 0.0.5
  * @since 0.0.3
  */
 package com.focust.api.util.testcontainers;
@@ -33,11 +33,16 @@ package com.focust.api.util.testcontainers;
 // Testcontainers //
 import org.testcontainers.containers.MySQLContainer;
 
+// Standard Java //
+import java.util.List;
+
 ///////////////////////////////////////////////////////////////////////////
 
 public final class FocustMySQLContainer extends MySQLContainer<FocustMySQLContainer> {
 
     private static final String IMAGE_VERSION = "mysql:latest";
+    private static final String MYSQL_DATABASE = "focust_db";
+    private static final String MYSQL_NETWORK_MODE = "spring-mysql";
     private static FocustMySQLContainer databaseContainer;
 
     private FocustMySQLContainer() {
@@ -47,9 +52,20 @@ public final class FocustMySQLContainer extends MySQLContainer<FocustMySQLContai
     public static FocustMySQLContainer getInstance() {
         if (databaseContainer == null) {
             databaseContainer = new FocustMySQLContainer()
-                    .withDatabaseName("focust_db")
-                    .withNetworkMode("spring-mysql")
+                    .withDatabaseName(MYSQL_DATABASE)
+                    .withNetworkMode(MYSQL_NETWORK_MODE)
+                    .withEnv("MYSQL_DATABASE", MYSQL_DATABASE)
+                    .withConfigurationOverride("mysql/conf.d")
                     .withExposedPorts(3306);
+
+            // I do not want to add any sensitive information into the codebase itself,
+            // as that posses an obvious security vulnerability. Instead, I opted to use
+            // the following to ensure the proper environment variables that depend on
+            // said sensitive information are set without explicitly writing them down.
+            databaseContainer.setEnv(List.of(
+                            "MYSQL_USER=" + databaseContainer.getUsername(),
+                            "MYSQL_PASSWORD=" + databaseContainer.getPassword()
+                    ));
         }
         return databaseContainer;
     }

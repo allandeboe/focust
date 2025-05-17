@@ -1,5 +1,5 @@
 /**
- * UserIntegrationTests - Tests regarding the "/auth" and "/users" endpoints.
+ * UserEndpointTests.java - Tests regarding the "/auth" and "/users" endpoints.
  * Copyright (C) 2024  Allan DeBoe
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
  * @see com.focust.api.controllers.UserController
  *
  * @author Allan DeBoe (allan.m.deboe@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5
  * @since 0.0.3
  */
-package com.focust.api.controllers;
+package com.focust.api.integration.controllers;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -42,15 +42,16 @@ import com.focust.api.util.testcontainers.UseFocustMySQL;
 // REST-Assured //
 import io.restassured.http.ContentType;
 import io.restassured.RestAssured;
+import io.restassured.http.Cookies;
 import io.restassured.response.Response;
 
 // JUnit 5 (Jupiter) //
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 // Spring Framework //
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -69,7 +70,7 @@ import static org.hamcrest.Matchers.isA;
 @UseFocustMySQL
 @DirtiesContext
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class UserIntegrationTests {
+class UserEndpointTests {
 
     // These data members are needed for @UseFocustRestAssured
     @LocalServerPort protected int serverPort;
@@ -80,7 +81,7 @@ class UserIntegrationTests {
     public final void givenAuthRegister_whenSendingRequest_thenCreatedStatus() {
         RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "password123");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -89,7 +90,10 @@ class UserIntegrationTests {
                 .when().post("/auth/register");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
+
+        Cookies cookies = response.detailedCookies();
+        System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
 
         response.then().assertThat()
                 .statusCode(HttpStatus.CREATED.value())
@@ -104,7 +108,7 @@ class UserIntegrationTests {
     public final void givenAuthRegister_whenSendingRequestAndUserExists_thenOkStatus() {
         RegisterUserRequest request = new RegisterUserRequest("user@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -113,7 +117,7 @@ class UserIntegrationTests {
                 .when().post("/auth/register");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value());
@@ -124,7 +128,7 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("user@focust.local", "password123");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -133,7 +137,7 @@ class UserIntegrationTests {
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
@@ -150,7 +154,7 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("user@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -159,7 +163,7 @@ class UserIntegrationTests {
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
         response.then().assertThat()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -171,7 +175,7 @@ class UserIntegrationTests {
 
         SignInUserRequest request = new SignInUserRequest("test@focust.local", "123456pass");
 
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -180,7 +184,7 @@ class UserIntegrationTests {
                 .when().post("/auth/login");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
         response.then().assertThat()
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -191,7 +195,7 @@ class UserIntegrationTests {
     public final void givenUsers_whenSendingRequestForUsers_thenOkStatus() {
 
         PageNumberRequest request = new PageNumberRequest();
-        System.out.println("(UserIntegrationTests) - Sending:\n\"" + request.getJson() + "\"");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\"");
 
         Response response = RestAssured.given()
                 .accept(ContentType.JSON)
@@ -200,10 +204,46 @@ class UserIntegrationTests {
                 .when().get("/users");
 
         String responseBody = response.thenReturn().asString();
-        System.out.println("(UserIntegrationTests) - Received:\n\"" + responseBody + "\"");
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
 
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test @Order(7)
+    public final void givenRefreshTokenCookie_whenSendingRequestForNewAccessToken_thenOkStatus() {
+
+        SignInUserRequest request = new SignInUserRequest("user@focust.local", "password123");
+        System.out.println("(UserEndpointTests) - Sending:\n\"" + request.getJson() + "\" (Signed In User for Cookie)");
+        Response create_user_response = RestAssured.given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(request.getJson())
+                .when().post("/auth/login");
+        String userResponseBody = create_user_response.thenReturn().asString();
+        System.out.println("(UserEndpointTests) - Received:\n\"" + userResponseBody + "\"");
+
+        Cookies cookies = create_user_response.detailedCookies();
+        System.out.println("(UserEndpointTests) - Refresh Token:\n" + cookies.getValue("jwt-refresh-token"));
+
+        System.out.println("(UserEndpointTests) - Sending Access Token Refresh Request.");
+        Response response = RestAssured.given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .cookies(cookies)
+                .body("{}")
+                .when().get("/auth/refresh");
+
+        String responseBody = response.thenReturn().asString();
+        System.out.println("(UserEndpointTests) - Received:\n\"" + responseBody + "\"");
+
+        response.then().assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .cookie("jwt-refresh-token", isA(String.class))
+                .and()
+                .body("accessToken", isA(String.class))
+                .and()
+                .body("userId", isA(Integer.class));
     }
 
 }
