@@ -1,7 +1,12 @@
+# Git & Docker related Stuff
+Dockerfile
+.gitignore
+.dockerignore
+
 # IntelliJ IDEA data is only useful in a development environment
 .idea
 
-# No need for Markdown files
+# Documents
 HELP.md
 README.md
 

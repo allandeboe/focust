@@ -1,0 +1,11 @@
+# Git & Docker related Stuff
+Dockerfile
+.gitignore
+.dockerignore
+
+# Node Modules
+node_modules
+dist
+
+# Documents
+README.md

@@ -11,6 +11,7 @@ pipeline {
     environment {
         DATABASE_VOLUME_NAME = 'mysql-data'
         BACK_END_DATABASE_NETWORK_NAME = 'spring-mysql'
+        FRONT_END_BACK_END_NETWORK_NAME = 'react-spring'
     }
 
     stages {
@@ -19,7 +20,9 @@ pipeline {
             agent any
             steps {
                 sh 'docker volume inspect ${DATABASE_VOLUME_NAME} || docker volume create ${DATABASE_VOLUME_NAME}'
+
                 sh 'docker network inspect ${BACK_END_DATABASE_NETWORK_NAME} || docker network create ${BACK_END_DATABASE_NETWORK_NAME}'
+                sh 'docker network inspect ${FRONT_END_BACK_END_NETWORK_NAME} || docker network create ${FRONT_END_BACK_END_NETWORK_NAME}'
             }
         }
 
@@ -34,6 +37,7 @@ pipeline {
                     -e MYSQL_DATABASE=focust_db \
                     -e MYSQL_ROOT_PASSWORD=$MYSQL_DATABASE_CREDENTIALS_PSW \
                     --network ${BACK_END_DATABASE_NETWORK_NAME} \
+                    --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                     --volume=/root/docker/focust-mysql/conf.d:/etc/mysql/conf.d \
                     --volume=${DATABASE_VOLUME_NAME}:/var/lib/mysql \
                     --restart=always \
@@ -108,6 +112,29 @@ pipeline {
                     '''
                 }
             }   
+        }
+
+        stage("Run Front-end Server Container") {
+            agent any
+            environment {
+                
+            }
+            steps {
+                dir('./react') {
+                    sh '''
+                        docker build \
+                        . -t allandeboe/focust-react:0.0.1
+                    '''
+                    sh '''
+                        docker run -d --name focust-react \
+                        --network ${FRONT_END_BACK_END_NETWORK_NAME} \
+                        --restart=always \
+                        --volume=/var/run/docker.sock:/var/run/docker.sock \
+                        -p 5080:80 \
+                        allandeboe/focust-react:0.0.1
+                    '''
+                }
+            }
         }
 
     }

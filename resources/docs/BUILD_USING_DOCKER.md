@@ -1,9 +1,7 @@
 # Focust - Build from Source using Docker
 This markdown document is used as a guide for anyone who wants to build Focust using Docker
 
-## Spring Application
-
-### Setting up MySQL Database
+## MySQL Database
 First, for the Spring application to run properly, there has to be a MySQL Database set up, and the easiest way through a creating a MySQL Docker Container.
 
 Run the following commands, where you replace `[PASSWORD]` with the actual password for the MySQL database (we will need to use this password again later.)
@@ -20,6 +18,8 @@ docker run -d --name focust-mysql \
     -p 3307:3306 \
     mysql:latest
 ```
+
+## Spring Application
 
 ### SSL Certificate
 First, we need to a SSL certificate with `focust-spring` and `focust-spring.p12` being the *alias* and *keystore* respectively. You can do this by creating a **Self-Signed SSL Certificate**. If you want more information on how to create a Self-Signed SSL Certificate, I recommend the page ["How to Enable HTTPS in Spring Boot Application?"](https://www.geeksforgeeks.org/how-to-enable-https-in-spring-boot-application/) by *GeeksForGeeks*.
@@ -61,14 +61,15 @@ docker build \
 ```
 
 ### Run Docker Container
-Before going further, make sure that there exists a network called `spring-mysql`. If not, create it using `docker network create spring-mysql`. 
+Before going further, make sure that there exists Docker networks called `spring-mysql` and `react-spring`. If not, create it using `docker network create spring-mysql` and `docker network create react-spring`, respectively.
 
 Finally, to run the docker container, we need to make sure we run the following commands:
 
 **For Linux**
-```bat
+```sh
 docker run -d --name focust-spring \
     --network spring-mysql \
+    --network react-spring \
     --restart=always \
     --volume=/var/run/docker.sock:/var/run/docker.sock \
     --volume=$PWD:$PWD \
@@ -81,6 +82,7 @@ docker run -d --name focust-spring \
 ```bat
 docker run -d --name focust-spring^
     --network spring-mysql^
+    --network react-spring^
     --restart=always^
     --volume=/var/run/docker.sock:/var/run/docker.sock^
     -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal^
@@ -91,3 +93,27 @@ docker run -d --name focust-spring^
 > [!TIP]
 > For more information regarding having a docker container load up test containers, I recommend
 > reading [*this article*](https://java.testcontainers.org/supported_docker_environment/continuous_integration/dind_patterns/) on the Testcontainers website.
+
+## React Application
+
+### Build Docker Image
+To build the docker image, you can run the following command under the `./react` directory:
+
+```sh
+docker build \
+    . -t allandeboe/focust-react:0.0.1
+```
+
+### Run Docker Container
+Before going further, make sure that there exists a network called `react-spring`. If not, create it using `docker network create react-spring`. 
+
+Finally, to run the docker container, we need to make sure we run the following commands:
+
+```sh
+docker run -d --name focust-react \
+    --network react-spring \
+    --restart=always \
+    --volume=/var/run/docker.sock:/var/run/docker.sock \
+    -p 5080:80 \
+    allandeboe/focust-react:0.0.1
+```

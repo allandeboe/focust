@@ -33,6 +33,7 @@ Here is a brief list of technologies used for the [front-end server](./react). I
 |--- |--- |
 | [**React**](https://react.dev/) | Used for the front-end server. [TypeScript](https://www.typescriptlang.org/) is used to here. |
 | [**Tailwind CSS**](https://tailwindcss.com/) | contains common CSS utility classes that are agnostic to the overall structure of the application. |
+| [**Vite**](https://vite.dev/) | dev server that JavaScript/TypeScript files together as well as have hot module replacement to view changes to the front-end in real time. |
 
 # Building from Source
 There are multiple ways to build this application from source code:

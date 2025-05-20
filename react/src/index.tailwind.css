@@ -1,0 +1,16 @@
+/** Google Fonts **/
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&display=swap');
+
+/** TailwindCSS **/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/** Main Style **/
+@layer base {
+
+    .dm-sans {
+        font-family: 'DM Sans', Helvetica, Arial, sans-serif;
+    }
+
+}
