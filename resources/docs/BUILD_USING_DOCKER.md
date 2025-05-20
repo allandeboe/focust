@@ -114,6 +114,6 @@ docker run -d --name focust-react \
     --network react-spring \
     --restart=always \
     --volume=/var/run/docker.sock:/var/run/docker.sock \
-    -p 5080:80 \
+    -p 5080:5080 \
     allandeboe/focust-react:0.0.1
 ```

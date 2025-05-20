@@ -37,7 +37,6 @@ pipeline {
                     -e MYSQL_DATABASE=focust_db \
                     -e MYSQL_ROOT_PASSWORD=$MYSQL_DATABASE_CREDENTIALS_PSW \
                     --network ${BACK_END_DATABASE_NETWORK_NAME} \
-                    --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                     --volume=/root/docker/focust-mysql/conf.d:/etc/mysql/conf.d \
                     --volume=${DATABASE_VOLUME_NAME}:/var/lib/mysql \
                     --restart=always \
@@ -104,6 +103,7 @@ pipeline {
                     sh '''
                         docker run -d --name focust-spring \
                         --network ${BACK_END_DATABASE_NETWORK_NAME} \
+                        --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
                         -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal \
@@ -127,7 +127,7 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
-                        -p 5080:80 \
+                        -p 5080:5080 \
                         allandeboe/focust-react:0.0.1
                     '''
                 }
