@@ -116,9 +116,6 @@ pipeline {
 
         stage("Run Front-end Server Container") {
             agent any
-            environment {
-                
-            }
             steps {
                 dir('./react') {
                     sh '''
