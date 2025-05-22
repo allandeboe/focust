@@ -121,14 +121,14 @@ pipeline {
                 FOCUST_REACT_CLIENT_KEY = credentials('focust-react-client-key')
             }
             steps {
-                sh 'test -d .certs || mkdir .certs'
-                dir('./.certs') {
-                    sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem || exit 0'
-                    sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
-                    sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem || exit 0'
-                    sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
-                }
                 dir('./react') {
+                    sh 'test -d .certs || mkdir .certs'
+                    dir('./.certs') {
+                        sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem || exit 0'
+                        sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
+                        sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem || exit 0'
+                        sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
+                    }
                     sh '''
                         docker build \
                         . -t allandeboe/focust-react:0.0.1
