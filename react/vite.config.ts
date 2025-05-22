@@ -35,8 +35,8 @@ export default defineConfig({
       port: 5443,
       host: true,
       https: {
-        key: '/etc/ssl/certs/focust-react.key.pem',
-        cert: '/etc/ssl/certs/focust-react.crt.pem',
+        key: '/etc/ssl/certs/focust-react-client.key',
+        cert: '/usr/local/share/ca-certificates/focust-spring-client.crt',
       }
     },
 });

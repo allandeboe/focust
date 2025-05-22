@@ -97,12 +97,18 @@ docker run -d --name focust-spring^
 ## React Application
 
 ### SSL Certificate
-For the React server, you will need two PEM files: `focust-react.crt.pem` and `focust-react.key.pem` files. The easiest way to do this is to generate a `focust-react.p12` file in the same way as we created the `focust-spring.p12` for the Spring application. For more information, please reference the [**SSL Certificate**](#ssl-certificate) section for the Spring application.
+For the React server, you will need two PEM files: `focust-react-client.crt` and `focust-react-client.key` files. The easiest way to do this is to generate a `focust-react.p12` file in the same way as we created the `focust-spring.p12` for the Spring application. For more information, please reference the [**SSL Certificate**](#ssl-certificate) section for the Spring application.
 
-Next, we simply use `openssl` to generate the two pem files, as follows:
+Commands for the `focust-react-client.crt` file:
 ```sh
-openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.crt.pem -passout 'pass:[PASSWORD]' -clcerts -nokeys
+openssl pkcs12 -in focust-spring.p12 -passin 'pass:[PASSWORD]' -out focust-spring.crt.pem -passout 'pass:[PASSWORD]' -clcerts -nokeys
+openssl x509 -in focust-spring.crt.pem -passin 'pass:[PASSWORD]' -out focust-spring-client.crt
+```
+
+Commands for the `focust-react-client.key` file:
+```sh
 openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.key.pem -passout 'pass:[PASSWORD]' -nocerts -nodes
+openssl pkey -in focust-react.key.pem -passin 'pass:[PASSWORD]' -out focust-react-client.key
 ```
 
 Where `[PASSWORD]` is the password used to create `focust-react.p12` (make sure it is different from the password used to generate `focust-spring.p12`).
