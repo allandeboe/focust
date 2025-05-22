@@ -20,10 +20,10 @@
  * @date    May 17th, 2025
  */
 
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
 
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -32,7 +32,11 @@ export default defineConfig({
       tailwindcss(),
     ],
     server: {
-      port: 5080,
-      host: true
+      port: 5443,
+      host: true,
+      https: {
+        key: '/etc/ssl/certs/focust-react.key.pem',
+        cert: '/etc/ssl/certs/focust-react.crt.pem',
+      }
     },
 });

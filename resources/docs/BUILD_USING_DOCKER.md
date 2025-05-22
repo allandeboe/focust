@@ -96,6 +96,17 @@ docker run -d --name focust-spring^
 
 ## React Application
 
+### SSL Certificate
+For the React server, you will need two PEM files: `focust-react.crt.pem` and `focust-react.key.pem` files. The easiest way to do this is to generate a `focust-react.p12` file in the same way as we created the `focust-spring.p12` for the Spring application. For more information, please reference the [**SSL Certificate**](#ssl-certificate) section for the Spring application.
+
+Next, we simply use `openssl` to generate the two pem files, as follows:
+```sh
+openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.crt.pem -passout 'pass:[PASSWORD]' -clcerts -nokeys
+openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.key.pem -passout 'pass:[PASSWORD]' -nocerts -nodes
+```
+
+Where `[PASSWORD]` is the password used to create `focust-react.p12` (make sure it is different from the password used to generate `focust-spring.p12`).
+
 ### Build Docker Image
 To build the docker image, you can run the following command under the `./react` directory:
 
@@ -114,6 +125,6 @@ docker run -d --name focust-react \
     --network react-spring \
     --restart=always \
     --volume=/var/run/docker.sock:/var/run/docker.sock \
-    -p 5080:5080 \
+    -p 443:5443 \
     allandeboe/focust-react:0.0.1
 ```

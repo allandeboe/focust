@@ -62,7 +62,8 @@ pipeline {
                 withCredentials(bindings: [certificate(aliasVariable: '', \
                                        credentialsId: 'focust-spring-ssl-certificate', \
                                        keystoreVariable: 'SSL_CERTIFICATE_PATH', \
-                                       passwordVariable: 'SSL_CERTIFICATE_PSW')]) {
+                                       passwordVariable: 'SSL_CERTIFICATE_PSW')]) 
+                {
                     dir ('./spring/src/main/resources') {
                         sh 'test -d .keystore || mkdir .keystore'
                         dir ('./.keystore') {
@@ -88,8 +89,8 @@ pipeline {
                         sh 'test -f spring-security && rm spring-security'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
                         
-                        sh 'test -f ssl-keystore && rm ssl-keystore'
-                        sh 'echo "$SSL_CERTIFICATE_PSW" >> ssl-keystore'
+                        sh 'test -f spring-ssl-keystore && rm spring-ssl-keystore'
+                        sh 'echo "$SSL_CERTIFICATE_PSW" >> spring-ssl-keystore'
                     }
                 }
                 dir('./spring') {
@@ -97,7 +98,7 @@ pipeline {
                         docker build \
                         --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
                         --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
-                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/ssl-keystore" \
+                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/spring-ssl-keystore" \
                         . -t allandeboe/focust-spring:0.0.5
                     '''
                     sh '''
@@ -116,7 +117,18 @@ pipeline {
 
         stage("Run Front-end Server Container") {
             agent any
+            environment {
+                FOCUST_REACT_CLIENT_CRT = credentials('focust-react-client-crt')
+                FOCUST_REACT_CLIENT_KEY = credentials('focust-react-client-key')
+            }
             steps {
+                sh 'test -d .certs || mkdir .certs'
+                dir('./.certs') {
+                    sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem'
+                    sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
+                    sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem'
+                    sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
+                }
                 dir('./react') {
                     sh '''
                         docker build \
@@ -127,7 +139,7 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
-                        -p 5080:5080 \
+                        -p 443:5443 \
                         allandeboe/focust-react:0.0.1
                     '''
                 }

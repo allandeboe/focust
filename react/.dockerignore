@@ -9,3 +9,6 @@ dist
 
 # Documents
 README.md
+
+# From Jenkins Pipeline
+../.secrets

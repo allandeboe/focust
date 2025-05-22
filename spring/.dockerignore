@@ -13,3 +13,6 @@ README.md
 # Since the container is Linux-based, Windows batch files make no sense to use.
 *.cmd
 *.bat
+
+# From Jenkins pipeline
+../.secrets
