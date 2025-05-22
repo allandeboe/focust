@@ -3,11 +3,6 @@
 ### BUILDING & TESTING STAGE ###
 FROM node:current-alpine3.20 AS build-stage
 
-RUN apt-get update && \
-    apt-get install -y \
-    openssl \
-    wget
-
 WORKDIR /usr/src/focust-react
 
 COPY package*.json ./
@@ -21,8 +16,7 @@ RUN npm run build
 ### RUNNING THE BINARY ###
 FROM busybox:latest AS run-stage
 
-COPY --from=build-stage ./.certs /etc/ssl/certs
-RUN rm -rf ./.certs
+COPY ../.certs /etc/ssl/certs
 
 WORKDIR /usr/src/focust-react
 COPY --from=build-stage /usr/src/focust-react/dist .
