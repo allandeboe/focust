@@ -66,30 +66,30 @@ pipeline {
                     dir ('./spring/src/main/resources') {
                         sh 'test -d .keystore || mkdir .keystore'
                         dir ('./.keystore') {
-                            sh 'test -f ./focust-spring.p12 && rm ./focust-spring.p12'
+                            sh 'test -f ./focust-spring.p12 && rm ./focust-spring.p12 || exit 0'
                             sh 'cp $SSL_CERTIFICATE_PATH ./focust-spring.p12'
 
-                            sh 'test -f ./focust-spring-client.crt && rm ./focust-spring-client.crt'
+                            sh 'test -f ./focust-spring-client.crt && rm ./focust-spring-client.crt || exit 0'
                             sh 'cp $FOCUST_SPRING_CLIENT_CRT ./focust-spring-client.crt'
-                            sh 'test -f ./focust-spring-client.key && rm ./focust-spring-client.key'
+                            sh 'test -f ./focust-spring-client.key && rm ./focust-spring-client.key || exit 0'
                             sh 'cp $FOCUST_SPRING_CLIENT_KEY ./focust-spring-client.key'
 
-                            sh 'test -f ./public_key.der && rm ./public_key.der'
+                            sh 'test -f ./public_key.der && rm ./public_key.der || exit 0'
                             sh 'cp $JWT_RSA_PUBLIC_KEY ./public_key.der'
-                            sh 'test -f ./private_key.der && rm ./private_key.der'
+                            sh 'test -f ./private_key.der && rm ./private_key.der || exit 0'
                             sh 'cp $JWT_RSA_PRIVATE_KEY ./private_key.der'
                         }
                     }
                     sh 'test -d .secrets || mkdir .secrets'
                     dir ('./.secrets') {
-                        sh 'test -f "mysql-root" && rm mysql-root'
+                        sh 'test -f "mysql-root" && rm mysql-root || exit 0'
                         sh 'echo "$MYSQL_DATABASE_CREDENTIALS_PSW" >> mysql-root'
 
-                        sh 'test -f "spring-security" && rm spring-security'
+                        sh 'test -f "spring-security" && rm spring-security || exit 0'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
                         
-                        sh 'test -f "ssl-keystore" && rm ssl-keystore'
-                        sh 'echo "$SSL_CERTIFICATE_PSW" >> ssl-keystore'
+                        sh 'test -f "spring-ssl-keystore" && rm spring-ssl-keystore || exit 0'
+                        sh 'echo "$SSL_CERTIFICATE_PSW" >> spring-ssl-keystore'
                     }
                 }
                 dir('./spring') {
@@ -97,7 +97,7 @@ pipeline {
                         docker build \
                         --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
                         --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
-                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/ssl-keystore" \
+                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/spring-ssl-keystore" \
                         . -t allandeboe/focust-spring:0.0.5
                     '''
                     sh '''
@@ -123,9 +123,9 @@ pipeline {
             steps {
                 sh 'test -d .certs || mkdir .certs'
                 dir('./.certs') {
-                    sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem'
+                    sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem || exit 0'
                     sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
-                    sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem'
+                    sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem || exit 0'
                     sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
                 }
                 dir('./react') {

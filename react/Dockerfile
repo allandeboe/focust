@@ -21,7 +21,7 @@ RUN npm run build
 ### RUNNING THE BINARY ###
 FROM busybox:latest AS run-stage
 
-COPY ./.certs /etc/ssl/certs
+COPY --from=build-stage ./.certs /etc/ssl/certs
 RUN rm -rf ./.certs
 
 WORKDIR /usr/src/focust-react
