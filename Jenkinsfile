@@ -83,13 +83,13 @@ pipeline {
                     }
                     sh 'test -d .secrets || mkdir .secrets'
                     dir ('./.secrets') {
-                        sh 'test -f mysql-root && rm mysql-root'
+                        sh 'test -f "mysql-root" && rm mysql-root'
                         sh 'echo "$MYSQL_DATABASE_CREDENTIALS_PSW" >> mysql-root'
 
-                        sh 'test -f spring-security && rm spring-security'
+                        sh 'test -f "spring-security" && rm spring-security'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
                         
-                        sh 'test -f spring-ssl-keystore && rm spring-ssl-keystore'
+                        sh 'test -f "spring-ssl-keystore" && rm spring-ssl-keystore'
                         sh 'echo "$SSL_CERTIFICATE_PSW" >> spring-ssl-keystore'
                     }
                 }
