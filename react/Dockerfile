@@ -21,5 +21,5 @@ COPY --from=build-stage /usr/src/focust-react/.certs /etc/ssl/certs
 WORKDIR /usr/src/focust-react
 COPY --from=build-stage /usr/src/focust-react/dist .
 
-EXPOSE 5443 443
+EXPOSE 5443
 ENTRYPOINT ["busybox", "httpd", "-f", "-v", "-p", "5443"]
