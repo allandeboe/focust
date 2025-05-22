@@ -88,8 +88,8 @@ pipeline {
                         sh 'test -f "spring-security" && rm spring-security'
                         sh 'echo "$SPRING_SECURITY_CREDENTIALS" >> spring-security'
                         
-                        sh 'test -f "spring-ssl-keystore" && rm spring-ssl-keystore'
-                        sh 'echo "$SSL_CERTIFICATE_PSW" >> spring-ssl-keystore'
+                        sh 'test -f "ssl-keystore" && rm ssl-keystore'
+                        sh 'echo "$SSL_CERTIFICATE_PSW" >> ssl-keystore'
                     }
                 }
                 dir('./spring') {
@@ -97,7 +97,7 @@ pipeline {
                         docker build \
                         --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
                         --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
-                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/spring-ssl-keystore" \
+                        --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/ssl-keystore" \
                         . -t allandeboe/focust-spring:0.0.5
                     '''
                     sh '''
