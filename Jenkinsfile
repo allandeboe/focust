@@ -62,8 +62,7 @@ pipeline {
                 withCredentials(bindings: [certificate(aliasVariable: '', \
                                        credentialsId: 'focust-spring-ssl-certificate', \
                                        keystoreVariable: 'SSL_CERTIFICATE_PATH', \
-                                       passwordVariable: 'SSL_CERTIFICATE_PSW')]) 
-                {
+                                       passwordVariable: 'SSL_CERTIFICATE_PSW')]) {
                     dir ('./spring/src/main/resources') {
                         sh 'test -d .keystore || mkdir .keystore'
                         dir ('./.keystore') {
