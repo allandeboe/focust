@@ -36,7 +36,7 @@ export default defineConfig({
       host: true,
       https: {
         key: '/etc/ssl/certs/focust-react-client.key',
-        cert: '/usr/local/share/ca-certificates/focust-spring-client.crt',
+        cert: '/etc/ssl/certs/focust-react-client.crt',
       }
     },
 });
