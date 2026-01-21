@@ -4,8 +4,11 @@
 FROM node:current-alpine3.20 AS build-stage
 
 WORKDIR /usr/src/focust-react
-
 COPY package*.json ./
+
+COPY ./.certs /etc/ssl/certs
+RUN apk update && apk add ca-certificates
+
 RUN npm install 
 
 COPY . .
@@ -21,9 +24,7 @@ FROM busybox:latest AS run-stage
 #    openssl \
 #    wget
 
-COPY --from=build-stage /usr/src/focust-react/.certs/focust-react-client.key /etc/ssl/certs/focust-react-client.key
-COPY --from=build-stage /usr/src/focust-react/.certs/focust-react-client.crt /etc/ssl/certs/focust-react-client.crt
-#RUN update-ca-certificates 
+COPY --from=build-stage /etc/ssl/certs /etc/ssl/certs
 
 WORKDIR /usr/src/focust-react
 COPY --from=build-stage /usr/src/focust-react/dist .
