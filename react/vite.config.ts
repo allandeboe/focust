@@ -33,7 +33,10 @@ export default defineConfig({
   server: {
     port: 443,
     host: true,
-    https: true,
+    https: {
+      key: '/etc/ssl/certs/focust-react.key.pem',
+      cert: '/etc/ssl/certs/focust-react.crt.pem',
+    },
     headers: {
       'Strict-Transport-Security': `max-age=${MAX_AGE}`
     }
