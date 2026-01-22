@@ -29,5 +29,7 @@ COPY --from=build-stage /etc/ssl/certs /etc/ssl/certs
 WORKDIR /usr/src/focust-react
 COPY --from=build-stage /usr/src/focust-react/dist .
 
-EXPOSE 5443
-ENTRYPOINT ["busybox", "httpd", "-f", "-v", "-p", "5443"]
+# Only valid ports for HTTPS is 443 and 8443, and port
+# 8443 is taken up by the back-end server
+EXPOSE 443
+ENTRYPOINT ["busybox", "httpd", "-f", "-v", "-p", "443"]

@@ -31,7 +31,7 @@ const MAX_AGE = 365 * 24 * 60 * 60
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    port: 5443,
+    port: 443,
     host: true,
     https: true,
     headers: {
