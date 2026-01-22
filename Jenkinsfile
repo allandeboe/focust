@@ -138,7 +138,7 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
-                        -p 5443:5443 \
+                        -p 443:5443 \
                         allandeboe/focust-react:0.0.1
                     '''
                 }
