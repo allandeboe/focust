@@ -31,7 +31,7 @@ const MAX_AGE = 365 * 24 * 60 * 60
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    port: 443,
+    port: 5443,
     host: true,
     https: {
       key: '/etc/ssl/certs/focust-react.key.pem',
