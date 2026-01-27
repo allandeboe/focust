@@ -19,10 +19,14 @@ RUN npm run build
 ### RUNNING THE BINARY ###
 FROM busybox:latest AS run-stage
 
-#RUN apt-get update && \
-#    apt-get install -y \
-#    openssl \
-#    wget
+# We need to install OpenSSL to allow it to use SSL
+# Certificates.
+#
+# While busybox does not have apt, it does have dpkg
+# and wget, which should hopefully work:
+# https://www.busybox.net/downloads/BusyBox.html
+RUN wget http://ftp.us.debian.org/debian/pool/main/o/openssl/openssl_3.5.4-1+b1_amd64.deb && \
+     dpkg --install ./openssl_3.5.4-1+b1_amd64.deb 
 
 COPY --from=build-stage /etc/ssl/certs /etc/ssl/certs
 
