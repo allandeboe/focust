@@ -32,7 +32,7 @@ const MAX_AGE = 365 * 24 * 60 * 60
 export default defineConfig({
   server: {
     port: 5443,
-    host: true,
+    host: '127.0.0.1',
     https: {
       key: '/usr/local/share/ca-certificates/focust-react-client.key',
       cert: '/usr/local/share/ca-certificates/focust-react-client.crt',
