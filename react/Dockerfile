@@ -17,9 +17,24 @@ RUN npm run build
 FROM alpine:3.23 AS run-stage
 
 # Copy certificates into this stage
-RUN apk update && apk add --no-cache ca-certificates
+RUN apk update && \
+     apk add --no-cache \
+     ca-certificates \
+     mini_httpd
+
 COPY ./.certs /usr/local/share/ca-certificates
+COPY ./mini_httpd/mini_httpd.conf /etc/mini_httpd/mini_httpd.conf
 RUN update-ca-certificates
+
+# should be the same user in `./mini_httpd/mini_httpd.conf`
+RUN groupadd -r appgroup --gid=1001 && \
+     useradd -r -g appgroup --uid=1001 \
+     --shell=/bin/bash \
+     --create-home react-appgroup
+RUN usermod -aG sudo react-app
+RUN test -d /usr/src/focust-react || mkdir /usr/src/focust-react
+RUN chown react-app /usr/src/focust-react
+USER react-app
 
 # Copy rendered front-end to this stage
 WORKDIR /usr/src/focust-react
@@ -29,4 +44,4 @@ COPY --from=build-stage /usr/src/focust-react/dist .
 # 8443 is taken up by the back-end server
 EXPOSE 443
 HEALTHCHECK CMD wget -qO- https://localhost:443 || exit 1
-ENTRYPOINT ["httpd", "-f", "-v", "-p", "443"]
+ENTRYPOINT ["mini_httpd", "-C", "/etc/mini_httpd/mini_httpd.conf", "-D"]
