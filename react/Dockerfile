@@ -42,5 +42,5 @@ COPY --from=build-stage /usr/src/focust-react/dist .
 # Only valid ports for HTTPS is 443 and 8443, and port
 # 8443 is taken up by the back-end server
 EXPOSE 443
-HEALTHCHECK CMD wget -qO- https://localhost:443 || exit 1
+HEALTHCHECK --interval=60s CMD wget -qO- https://localhost:443 || exit 1
 ENTRYPOINT ["mini_httpd", "-C", "/etc/mini_httpd/mini_httpd.conf", "-D"]

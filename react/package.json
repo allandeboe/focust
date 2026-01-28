@@ -9,7 +9,7 @@
     "watch": "tailwindcss -i ./src/index.tailwind.css -o ./src/index.css --watch",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "set PORT=443 && react-scripts start"
+    "start": "export PORT=443 react-scripts start"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",
