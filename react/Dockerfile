@@ -6,9 +6,6 @@ FROM node:current-alpine3.20 AS build-stage
 WORKDIR /usr/src/focust-react
 COPY package*.json ./
 
-COPY ./.certs /etc/ssl/certs
-RUN apk update && apk add ca-certificates
-
 RUN npm install 
 
 COPY . .
@@ -17,23 +14,19 @@ RUN npm run build
 ####################################################################################################
 
 ### RUNNING THE BINARY ###
-FROM busybox:latest AS run-stage
+FROM alpine:3.23 AS run-stage
 
-# We need to install OpenSSL to allow it to use SSL
-# Certificates.
-#
-# While busybox does not have apt, it does have dpkg
-# and wget, which should hopefully work:
-# https://www.busybox.net/downloads/BusyBox.html
-RUN wget http://ftp.us.debian.org/debian/pool/main/o/openssl/openssl_3.5.4-1+b1_amd64.deb && \
-     dpkg --install ./openssl_3.5.4-1+b1_amd64.deb 
+# Copy certificates into this stage
+RUN apk update && apk add --no-cache ca-certificates
+COPY ./.certs /usr/local/share/ca-certificates
+RUN update-ca-certificates
 
-COPY --from=build-stage /etc/ssl/certs /etc/ssl/certs
-
+# Copy rendered front-end to this stage
 WORKDIR /usr/src/focust-react
 COPY --from=build-stage /usr/src/focust-react/dist .
 
 # Only valid ports for HTTPS is 443 and 8443, and port
 # 8443 is taken up by the back-end server
 EXPOSE 443
-ENTRYPOINT ["busybox", "httpd", "-f", "-v", "-p", "443"]
+HEALTHCHECK CMD wget -qO- https://localhost:443 || exit 1
+ENTRYPOINT ["httpd", "-f", "-v", "-p", "443"]
