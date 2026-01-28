@@ -31,7 +31,7 @@ RUN addgroup -S appgroup && \
      adduser -S react-app \
      -G appgroup \
      -s=/bin/sh
-RUN test -d /usr/src/focust-react || mkdir /usr/src/focust-react
+RUN test -d /usr/src/focust-react || mkdir --parents /usr/src/focust-react
 RUN chown react-app /usr/src/focust-react
 USER react-app
 
