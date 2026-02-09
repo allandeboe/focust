@@ -34,7 +34,7 @@ RUN addgroup -S appgroup && \
 RUN test -d /usr/src/focust-react || mkdir --parents /usr/src/focust-react
 RUN chown react-app /usr/src/focust-react && \
      chown react-app /usr/local/share/ca-certificates
-RUN chmod 777 /usr/local/share/ca-certificates/focust-react.crt.pem
+RUN chmod 775 /usr/local/share/ca-certificates/focust-react.pem
 
 USER react-app
 

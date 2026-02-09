@@ -113,6 +113,8 @@ openssl pkey -in focust-react.key.pem -passin 'pass:[PASSWORD]' -out focust-reac
 
 Where `[PASSWORD]` is the password used to create `focust-react.p12` (make sure it is different from the password used to generate `focust-spring.p12`).
 
+Now, combine the contents in both `focust-react-client.key` and `focust-react-client.crt` into a single `.pem` file (`focust-react.pem`), making sure to put the contents of the `.key` file first.
+
 ### Build Docker Image
 To build the docker image, you can run the following command under the `./react` directory:
 

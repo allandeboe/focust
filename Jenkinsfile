@@ -52,7 +52,7 @@ pipeline {
                 MYSQL_DATABASE_CREDENTIALS = credentials('focust-mysql-database')
                 SPRING_SECURITY_CREDENTIALS = credentials('focust-mysql-database')
 
-                FOCUST_SPRING_CLIENT_CRT = credentials('focust-spring-client-crt')
+                FOCUST_SPRING_CLIENT_PEM = credentials('focust-spring-client-crt')
                 FOCUST_SPRING_CLIENT_KEY = credentials('focust-spring-client-key')
 
                 JWT_RSA_PUBLIC_KEY = credentials('focust-jwt-rsa-public-key')
@@ -117,17 +117,14 @@ pipeline {
         stage("Run Front-end Server Container") {
             agent any
             environment {
-                FOCUST_REACT_CLIENT_CRT = credentials('focust-react-client-crt')
-                FOCUST_REACT_CLIENT_KEY = credentials('focust-react-client-key')
+                FOCUST_REACT_PEM = credentials('focust-react-pemt')
             }
             steps {
                 dir('./react') {
                     sh 'test -d .certs || mkdir .certs'
                     dir('./.certs') {
-                        sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem || exit 0'
-                        sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
-                        sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem || exit 0'
-                        sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
+                        sh 'test -f ./focust-react.pem && rm ./focust-react.pem || exit 0'
+                        sh 'cp $FOCUST_REACT_PEM ./focust-react.pem'
                     }
                     sh '''
                         docker build \
