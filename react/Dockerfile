@@ -29,7 +29,7 @@ RUN update-ca-certificates
 # should be the same user in `./mini_httpd/mini_httpd.conf`
 RUN addgroup -S appgroup && \
      adduser -S react-app \
-     -G appgroup \
+     --system -G appgroup \
      -s=/bin/sh
 RUN test -d /usr/src/focust-react || mkdir --parents /usr/src/focust-react
 RUN chown react-app /usr/src/focust-react
