@@ -43,4 +43,8 @@ COPY --from=build-stage /usr/src/focust-react/dist .
 # 8443 is taken up by the back-end server
 EXPOSE 443
 HEALTHCHECK --interval=60s CMD wget -qO- https://localhost:443 || exit 1
+
+# Due to how Vite works, we cannot set up HTTPS/SSL with the configs.
+# However, mini_httpd does provide a way of setting up HTTPS
+# see ./mini_httpd/mini_http.conf
 ENTRYPOINT ["mini_httpd", "-C", "/etc/mini_httpd/mini_httpd.conf", "-D"]

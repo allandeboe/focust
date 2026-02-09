@@ -25,26 +25,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// "max-age" is 1 year long
-const MAX_AGE = 365 * 24 * 60 * 60
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss()
   ],
-  server: {
-    port: 5443,
-    host: '127.0.0.1',
-    https: {
-      key: '/usr/local/share/ca-certificates/focust-react-client.key',
-      cert: '/usr/local/share/ca-certificates/focust-react-client.crt',
-    },
-    headers: {
-      'Strict-Transport-Security': `max-age=${MAX_AGE}`
-    }
-  },
   build: {
     outDir: 'dist',
     sourcemap: true
