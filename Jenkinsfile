@@ -124,10 +124,10 @@ pipeline {
                 dir('./react') {
                     sh 'test -d .certs || mkdir .certs'
                     dir('./.certs') {
-                        sh 'test -f ./focust-react-client.crt && rm ./focust-react-client.crt || exit 0'
-                        sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react-client.crt'
-                        sh 'test -f ./focust-react-client.key && rm ./focust-react-client.key || exit 0'
-                        sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react-client.key'
+                        sh 'test -f ./focust-react.crt.pem && rm ./focust-react.crt.pem || exit 0'
+                        sh 'cp $FOCUST_REACT_CLIENT_CRT ./focust-react.crt.pem'
+                        sh 'test -f ./focust-react.key.pem && rm ./focust-react.key.pem || exit 0'
+                        sh 'cp $FOCUST_REACT_CLIENT_KEY ./focust-react.key.pem'
                     }
                     sh '''
                         docker build \
