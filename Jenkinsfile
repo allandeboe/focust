@@ -52,7 +52,7 @@ pipeline {
                 MYSQL_DATABASE_CREDENTIALS = credentials('focust-mysql-database')
                 SPRING_SECURITY_CREDENTIALS = credentials('focust-mysql-database')
 
-                FOCUST_SPRING_CLIENT_PEM = credentials('focust-spring-client-crt')
+                FOCUST_SPRING_CLIENT_CRT = credentials('focust-spring-client-crt')
                 FOCUST_SPRING_CLIENT_KEY = credentials('focust-spring-client-key')
 
                 JWT_RSA_PUBLIC_KEY = credentials('focust-jwt-rsa-public-key')
