@@ -1,9 +1,7 @@
 # Focust - Build from Source using Docker
 This markdown document is used as a guide for anyone who wants to build Focust using Docker
 
-## Spring Application
-
-### Setting up MySQL Database
+## MySQL Database
 First, for the Spring application to run properly, there has to be a MySQL Database set up, and the easiest way through a creating a MySQL Docker Container.
 
 Run the following commands, where you replace `[PASSWORD]` with the actual password for the MySQL database (we will need to use this password again later.)
@@ -20,6 +18,8 @@ docker run -d --name focust-mysql \
     -p 3307:3306 \
     mysql:latest
 ```
+
+## Spring Application
 
 ### SSL Certificate
 First, we need to a SSL certificate with `focust-spring` and `focust-spring.p12` being the *alias* and *keystore* respectively. You can do this by creating a **Self-Signed SSL Certificate**. If you want more information on how to create a Self-Signed SSL Certificate, I recommend the page ["How to Enable HTTPS in Spring Boot Application?"](https://www.geeksforgeeks.org/how-to-enable-https-in-spring-boot-application/) by *GeeksForGeeks*.
@@ -61,14 +61,15 @@ docker build \
 ```
 
 ### Run Docker Container
-Before going further, make sure that there exists a network called `spring-mysql`. If not, create it using `docker network create spring-mysql`. 
+Before going further, make sure that there exists Docker networks called `spring-mysql` and `react-spring`. If not, create it using `docker network create spring-mysql` and `docker network create react-spring`, respectively.
 
 Finally, to run the docker container, we need to make sure we run the following commands:
 
 **For Linux**
-```bat
+```sh
 docker run -d --name focust-spring \
     --network spring-mysql \
+    --network react-spring \
     --restart=always \
     --volume=/var/run/docker.sock:/var/run/docker.sock \
     --volume=$PWD:$PWD \
@@ -81,6 +82,7 @@ docker run -d --name focust-spring \
 ```bat
 docker run -d --name focust-spring^
     --network spring-mysql^
+    --network react-spring^
     --restart=always^
     --volume=/var/run/docker.sock:/var/run/docker.sock^
     -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal^
@@ -91,3 +93,51 @@ docker run -d --name focust-spring^
 > [!TIP]
 > For more information regarding having a docker container load up test containers, I recommend
 > reading [*this article*](https://java.testcontainers.org/supported_docker_environment/continuous_integration/dind_patterns/) on the Testcontainers website.
+
+## React Application
+
+### SSL Certificate
+For the React server, you will need two certificate files: `focust-react-client.crt` and `focust-react-client.key` files. This is done almost the same way we did for getting the `focust-spring-client.crt` and `focust-spring-client.key` files. For more information, please reference the [**SSL Certificate**](#ssl-certificate) section for the Spring application.
+
+Commands for the `focust-react-client.crt` file:
+```sh
+openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.crt.pem -passout 'pass:[PASSWORD]' -clcerts -nokeys
+openssl x509 -in focust-react.crt.pem -passin 'pass:[PASSWORD]' -out focust-react-client.crt
+```
+
+Commands for the `focust-react-client.key` file:
+```sh
+openssl pkcs12 -in focust-react.p12 -passin 'pass:[PASSWORD]' -out focust-react.key.pem -passout 'pass:[PASSWORD]' -nocerts -nodes
+openssl pkey -in focust-react.key.pem -passin 'pass:[PASSWORD]' -out focust-react-client.key
+```
+
+Where `[PASSWORD]` is the password used to create `focust-react.p12` (make sure it is different from the password used to generate `focust-spring.p12`).
+
+Now, combine the contents in both `focust-react-client.key` and `focust-react-client.crt` into a single `.pem` file (`focust-react.pem`), making sure to put the contents of the `.key` file first.
+
+### Build Docker Image
+To build the docker image, you can run the following command under the `./react` directory:
+
+```sh
+docker build \
+    . -t allandeboe/focust-react:0.0.1
+```
+
+### Run Docker Container
+Before going further, make sure that there exists a network called `react-spring`. If not, create it using `docker network create react-spring`. 
+
+Finally, to run the docker container, we need to make sure we run the following commands:
+
+```sh
+docker run -d --name focust-react \
+    --network react-spring \
+    --restart=always \
+    --volume=/var/run/docker.sock:/var/run/docker.sock \
+    -p 443:443 \
+    allandeboe/focust-react:0.0.1
+```
+
+## Interaction
+If the docker containers do their job successfully, the following endpoints should be available for access:
+* https://localhost:8443 - the Spring, REST back-end
+* https://localhost:443 - the React front-end

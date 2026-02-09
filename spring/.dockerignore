@@ -1,10 +1,18 @@
+# Git & Docker related Stuff
+Dockerfile
+.gitignore
+.dockerignore
+
 # IntelliJ IDEA data is only useful in a development environment
 .idea
 
-# No need for Markdown files
+# Documents
 HELP.md
 README.md
 
 # Since the container is Linux-based, Windows batch files make no sense to use.
 *.cmd
 *.bat
+
+# From Jenkins pipeline
+../.secrets

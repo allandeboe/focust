@@ -47,14 +47,15 @@ The next credential needed is an **certificate** credential, where you upload an
 
 * `focust-spring-ssl-certificate` - to enable HTTPS for the Spring Application; `focust-spring` and `focust-spring.p12` are the values for *alias* and the *keystore*, respectively.
 
-The final 4 credentials needed are **Secret File** credentials, where you upload both the generated `.crt` and `.key` files of the `focust-spring.p12` (i.e. `focust-spring-client.crt` and `focust-spring-client.key`) and the RSA public and private key files (i.e. `public_key.der` and `private_key.der`) used to sign and verify JWT tokens.
+The final 6 credentials needed are **Secret File** credentials, where you upload both the generated `.crt` and `.key` files of the `focust-spring.p12` (i.e. `focust-spring-client.crt` and `focust-spring-client.key`), the RSA public and private key files (i.e. `public_key.der` and `private_key.der`) used to sign and verify JWT tokens, and a single `.pem` file containing the certificate and private key for the react front-end (i.e. `focust-react.pem`), which one can generate by first creating `.crt` and `.key` files from `focust-react.p12` and put the data in both into a single `.pem` file.
 
 * `focust-spring-client-crt` - the `focust-spring-client.crt` file.
 * `focust-spring-client-key` - the `focust-spring-client.key` file.
 * `focust-jwt-rsa-public-key` - the `public_key.der` file.
 * `focust-jwt-rsa-private-key` - the `private_key.der` file.
+* `focust-react-pem` - the `focust-react.pem` file.
 
-In the end, you should have the following 7 credentials under *Manage Jenkins* > *Credentials*:
+In the end, you should have the following 8 credentials under *Manage Jenkins* > *Credentials*:
 
 ![A Screenshot of the 7 credentials needed for the Focust application as it appears under *Manage Jenkins* > *Credentials*.](../images/jenkins-credentials.png)
 
