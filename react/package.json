@@ -9,7 +9,7 @@
     "watch": "tailwindcss -i ./src/index.tailwind.css -o ./src/index.css --watch",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "set PORT=443 HTTPS=true SSL_CRT_FILE=/usr/local/share/ca-certificates/focust-react-client.crt SSL_KEY_FILE=/usr/local/share/ca-certificates/focust-react-client.key react-scripts start"
+    "start": "PORT=443 HTTPS=true SSL_CRT_FILE=/usr/local/share/ca-certificates/focust-react-client.crt SSL_KEY_FILE=/usr/local/share/ca-certificates/focust-react-client.key react-scripts start"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",

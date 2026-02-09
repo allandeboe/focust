@@ -30,6 +30,10 @@ const MAX_AGE = 365 * 24 * 60 * 60
 
 // https://vite.dev/config/
 export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss()
+  ],
   server: {
     port: 5443,
     host: '127.0.0.1',
@@ -41,8 +45,8 @@ export default defineConfig({
       'Strict-Transport-Security': `max-age=${MAX_AGE}`
     }
   },
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  build: {
+    outDir: 'dist',
+    sourcemap: true
+  }
 });
