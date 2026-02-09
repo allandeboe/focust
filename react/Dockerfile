@@ -33,6 +33,7 @@ RUN addgroup -S appgroup && \
      -s=/bin/sh
 RUN test -d /usr/src/focust-react || mkdir --parents /usr/src/focust-react
 RUN chown react-app /usr/src/focust-react
+RUN chown react-app /usr/local/share/ca-certificates
 USER react-app
 
 # Copy rendered front-end to this stage
