@@ -117,7 +117,7 @@ pipeline {
         stage("Run Front-end Server Container") {
             agent any
             environment {
-                FOCUST_REACT_PEM = credentials('focust-react-pemt')
+                FOCUST_REACT_PEM = credentials('focust-react-pem')
             }
             steps {
                 dir('./react') {
