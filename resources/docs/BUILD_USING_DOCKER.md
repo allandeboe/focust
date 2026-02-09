@@ -133,6 +133,11 @@ docker run -d --name focust-react \
     --network react-spring \
     --restart=always \
     --volume=/var/run/docker.sock:/var/run/docker.sock \
-    -p 443:5443 \
+    -p 443:443 \
     allandeboe/focust-react:0.0.1
 ```
+
+## Interaction
+If the docker containers do their job successfully, the following endpoints should be available for access:
+* https://localhost:8443 - the Spring, REST back-end
+* https://localhost:443 - the React front-end
