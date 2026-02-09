@@ -34,9 +34,9 @@ RUN addgroup -S appgroup && \
 RUN test -d /usr/src/focust-react || mkdir --parents /usr/src/focust-react
 RUN chown react-app /usr/src/focust-react && \
      chown react-app /usr/local/share/ca-certificates
-USER react-app
-
 RUN chmod 775 /usr/local/share/ca-certificates/focust-react-client.crt
+
+USER react-app
 
 # Copy rendered front-end to this stage
 WORKDIR /usr/src/focust-react
