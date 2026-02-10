@@ -81,3 +81,7 @@ Now, all you have to do is press "Save" and you should finally have the job avai
 
 ## Running the Build
 Once back on the dashboard, all you have to do is press the Green arrow on the job and, if all goes well, the Jenkins job should have a green checkmark next to it after refreshing the page once the build is completed.
+
+If the docker containers do their job successfully, the following endpoints should be available for access:
+* https://localhost:8443 - the Spring, REST back-end
+* https://localhost:443 - the React front-end
