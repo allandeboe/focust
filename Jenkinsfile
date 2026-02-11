@@ -109,7 +109,7 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
-                        -p 8443:8443 -p 50000:50000 \
+                        -p 8443:8443 \
                         allandeboe/focust-spring:${FOCUST_SPRING_IMAGE_VERSION}
                     '''
                 }
