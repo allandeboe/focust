@@ -12,6 +12,9 @@ pipeline {
         DATABASE_VOLUME_NAME = 'mysql-data'
         BACK_END_DATABASE_NETWORK_NAME = 'spring-mysql'
         FRONT_END_BACK_END_NETWORK_NAME = 'react-spring'
+
+        FOCUST_SPRING_IMAGE_VERSION = '0.0.6'
+        FOCUST_REACT_IMAGE_VERSION = '0.0.1'
     }
 
     stages {
@@ -98,7 +101,7 @@ pipeline {
                         --secret "id=MYSQL_ROOT_PASSWORD,src=../.secrets/mysql-root" \
                         --secret "id=SPRING_SECURITY_PASSWORD,src=../.secrets/spring-security" \
                         --secret "id=SSL_KEYSTORE_PASSWORD,src=../.secrets/spring-ssl-keystore" \
-                        . -t allandeboe/focust-spring:0.0.5
+                        . -t allandeboe/focust-spring:${FOCUST_SPRING_IMAGE_VERSION}
                     '''
                     sh '''
                         docker run -d --name focust-spring \
@@ -106,8 +109,8 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
-                        -p 8443:8443 \
-                        allandeboe/focust-spring:0.0.5
+                        -p 8443:8443 -p 50000:50000 \
+                        allandeboe/focust-spring:${FOCUST_SPRING_IMAGE_VERSION}
                     '''
                 }
             }   
@@ -127,7 +130,7 @@ pipeline {
                     }
                     sh '''
                         docker build \
-                        . -t allandeboe/focust-react:0.0.1
+                        . -t allandeboe/focust-react:${FOCUST_REACT_IMAGE_VERSION}
                     '''
                     sh '''
                         docker run -d --name focust-react \
@@ -135,7 +138,7 @@ pipeline {
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
                         -p 443:443 \
-                        allandeboe/focust-react:0.0.1
+                        allandeboe/focust-react:${FOCUST_REACT_IMAGE_VERSION}
                     '''
                 }
             }
