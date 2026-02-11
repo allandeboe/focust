@@ -109,6 +109,7 @@ pipeline {
                         --network ${FRONT_END_BACK_END_NETWORK_NAME} \
                         --restart=always \
                         --volume=/var/run/docker.sock:/var/run/docker.sock \
+                        -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal \
                         -p 8443:8443 \
                         allandeboe/focust-spring:${FOCUST_SPRING_IMAGE_VERSION}
                     '''
