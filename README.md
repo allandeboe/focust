@@ -10,7 +10,7 @@
 
 Built using the [*Spring Framework*](https://spring.io/) (Java) and [*React*](https://react.dev/) (TypeScript), it is my personal flagship project that I made to showcase my full-stack development skills.
 
-This entire project has **no AI-generated code or assets**. AI, if used at all, is only used when debugging. the vector graphics are made in Inkscape.
+This entire project has **no AI-generated code or assets**. AI, if used at all, is only used when debugging. the vector graphics are made in [Inkscape](https://inkscape.org/).
 
 # Overview of Technologies
 The following table contains more general technologies that apply to the application as a whole rather than being more related to either back-end or front-end servers:
